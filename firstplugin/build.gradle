@@ -1,0 +1,34 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+dependencies {
+    //gradle sdk
+    implementation gradleApi()
+    //groovy sdk
+    implementation localGroovy()
+}
+
+repositories {
+    //mavenCentral()
+    maven{ url'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
+}
+
+uploadArchives{
+    repositories {
+        mavenDeployer{
+        //配置自定义插件的classpath
+            pom.groupId = 'com.wj.plugin'
+            pom.artifactId = 'FirstPlugin'
+            pom.version ='1.0.0'
+
+            //提交到远程服务器
+            // repository(url:"服务器地址"){
+            //    authentication(userName:'admin',password:'admin')
+            // }
+
+            //本地maven
+            repository(url:uri('../plugins'))
+        }
+    }
+}
+

@@ -1,0 +1,3 @@
+rootProject.name = "AndroidPlugin"
+include ':app'
+include ':firstplugin'
