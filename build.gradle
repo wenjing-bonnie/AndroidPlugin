@@ -13,7 +13,7 @@ buildscript {
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
-        classpath "com.wj.plugin:FirstPlugin:1.0.0"
+        //classpath "com.wj.plugin:firstplugin:1.0.0"
     }
 }
 
@@ -28,3 +28,32 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+this.gradle.addBuildListener(new BuildListener() {
+    @Override
+    void buildStarted(Gradle gradle) {
+
+        println("in build.gradle buildStarted ")
+
+    }
+
+    @Override
+    void settingsEvaluated(Settings settings) {
+        println("in build.gradle settingsEvaluated ")
+    }
+
+    @Override
+    void projectsLoaded(Gradle gradle) {
+        println("in build.gradle projectsLoaded ")
+    }
+
+    @Override
+    void projectsEvaluated(Gradle gradle) {
+        println("in build.gradle projectsEvaluated ")
+    }
+
+    @Override
+    void buildFinished(BuildResult buildResult) {
+        println("in build.gradle buildFinished ")
+    }
+})

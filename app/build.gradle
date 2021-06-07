@@ -1,6 +1,6 @@
 plugins {
     id 'com.android.application'
-    id 'com.wj.firstplugin'
+    //id 'com.wj.firstplugin'
 }
 
 android {
@@ -23,17 +23,57 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+    //signingConfigs{
+
+    // }
+}
+
+task firstTask  {
+    println("in build.gradle Hello first ")
+
+}
+
+task secondTask{
+    doLast {
+        println(" in build.gradle secondTask do doLast")
     }
 }
 
-
-firstPluginConfig{
-    sdkVersion '1.0.0'
+firstTask.doFirst {
+    println(" in build.gradle do first")
+}
+firstTask.doLast {
+    println("in build.gradle do last")
 }
 
+//firstPluginConfig {
+//    sdkVersion '1.0.0'
+//}
+
+//配置前
+this.beforeEvaluate {
+    println("in build.gradle beforeEvaluate")
+
+}
+//配置后
+this.afterEvaluate {
+    println("in build.gradle afterEvaluate ")
+
+}
+
+println(this.name)
+
+//this.getTasks().getByName("firstPluginConfig").doLast {
+//    println("in build.gradle firstPluginConfig  do last")
+//}
+
+configurations {
+
+    firstConfiguration{
+        description("This is the first configuration")
+
+    }
+}
 
 dependencies {
 
@@ -43,4 +83,6 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    firstConfiguration 'androidx.appcompat:appcompat:1.2.0'
 }

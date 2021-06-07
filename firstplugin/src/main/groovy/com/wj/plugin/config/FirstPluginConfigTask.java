@@ -2,6 +2,7 @@ package com.wj.plugin.config;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.TaskAction;
 
 /**
  * Created by wenjing.liu on 2021/6/3 in J1.
@@ -16,6 +17,12 @@ public class FirstPluginConfigTask extends DefaultTask {
     @Input
     public void setSdkVersion(String sdk) {
         this.sdkVersion = sdk;
+        System.out.println("FirstPluginConfigTask task  === "+sdk);
+    }
+
+    @TaskAction
+    public void setSdkVersion() {
+        System.out.println("FirstPluginConfigTask task  setSdkVersion === ");
     }
 
 }

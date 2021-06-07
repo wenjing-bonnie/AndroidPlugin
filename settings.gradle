@@ -1,3 +1,33 @@
 rootProject.name = "AndroidPlugin"
 include ':app'
 include ':firstplugin'
+
+
+this.gradle.addBuildListener(new BuildListener() {
+    @Override
+    void buildStarted(Gradle gradle) {
+
+        println("in settings.gradle buildStarted ")
+
+    }
+
+    @Override
+    void settingsEvaluated(Settings settings) {
+        println("in settings.gradle settingsEvaluated ")
+    }
+
+    @Override
+    void projectsLoaded(Gradle gradle) {
+        println("in settings.gradle projectsLoaded ")
+    }
+
+    @Override
+    void projectsEvaluated(Gradle gradle) {
+        println("in settings.gradle projectsEvaluated ")
+    }
+
+    @Override
+    void buildFinished(BuildResult buildResult) {
+        println("in settings.gradle buildFinished ")
+    }
+})

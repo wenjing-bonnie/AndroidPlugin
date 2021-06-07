@@ -1,6 +1,7 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
 
+
 dependencies {
     //gradle sdk
     implementation gradleApi()
@@ -9,17 +10,56 @@ dependencies {
 }
 
 repositories {
-    //mavenCentral()
-    maven{ url'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
+    mavenCentral()
+    //maven{ url'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
 }
 
-uploadArchives{
+//==== 方法一：打包成Jar包的方式 begin
+def marvenjar = 'mavenjar'
+//默认名字是 [archiveBaseName]-[archiveAppendix]-[archiveVersion]-[archiveClassifier].[archiveExtension]
+task makeJar(type: org.gradle.jvm.tasks.Jar) {
+    //删除之前创建的文件夹
+    delete marvenjar
+    archiveBaseName = "firstplugin"
+    archiveAppendix = "appendix"
+    //为什么不起作用呢？？
+    archiveVersion = '1.0.0'
+    archiveClassifier = 'classifiter'
+    //扩展名，默认的为jar
+    //archiveExtension = "extension"
+    doLast {
+        println "=== task jar is finished ==="
+    }
+}
+
+artifacts {
+    //将firstPluginJar看做artifact，交给archives管理
+    archives makeJar
+}
+
+uploadArchives {
     repositories {
-        mavenDeployer{
-        //配置自定义插件的classpath
+        maven {
+            //在build.gradle的同级目录下生成mavenjar文件夹
+            url "file:" + marvenjar
+        }
+    }
+}
+//==== 打包成Jar包的方式 end
+
+//=== 方法二： 生成maven依赖库
+def localmaven = '../plugins'
+task deleteLocalMaven(type: Delete){
+    delete localmaven
+}
+uploadArchives {
+
+    repositories {
+        mavenDeployer {
+            //配置自定义插件的classpath
             pom.groupId = 'com.wj.plugin'
-            pom.artifactId = 'FirstPlugin'
-            pom.version ='1.0.0'
+            pom.artifactId = 'firstplugin'
+            pom.version = '1.0.0'
 
             //提交到远程服务器
             // repository(url:"服务器地址"){
@@ -27,7 +67,7 @@ uploadArchives{
             // }
 
             //本地maven
-            repository(url:uri('../plugins'))
+            repository(url: uri('../plugins'))
         }
     }
 }
