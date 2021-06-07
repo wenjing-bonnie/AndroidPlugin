@@ -28,7 +28,7 @@ task makeJar(type: org.gradle.jvm.tasks.Jar) {
     //扩展名，默认的为jar
     //archiveExtension = "extension"
     doLast {
-        println "=== task jar is finished ==="
+        println "=== task make jar is finished ==="
     }
 }
 

@@ -1,4 +1,4 @@
-package com.wj.plugin.config;
+package com.wj.plugin.task;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
