@@ -48,9 +48,8 @@ uploadArchives {
 //==== 打包成Jar包的方式 end
 
 //=== 方法二： 生成maven依赖库
-def localmaven = '../plugins'
 task deleteLocalMaven(type: Delete){
-    delete localmaven
+    delete '../plugins'
 }
 uploadArchives {
 
