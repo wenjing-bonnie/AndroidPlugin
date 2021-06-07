@@ -28,15 +28,12 @@ android {
     // }
 }
 
-task firstTask  {
-    println("in build.gradle Hello first ")
-
-}
-
-task secondTask{
+task firstTask {
+    println("in build.gradle firstTask ")
     doLast {
-        println(" in build.gradle secondTask do doLast")
+        println("in build.gradle firstTask do last")
     }
+
 }
 
 firstTask.doFirst {
@@ -50,6 +47,7 @@ firstPluginConfig {
     sdkVersion '1.0.0'
 }
 
+/*
 //配置前
 this.beforeEvaluate {
     println("in build.gradle beforeEvaluate")
@@ -60,16 +58,14 @@ this.afterEvaluate {
     println("in build.gradle afterEvaluate ")
 
 }
-
-println(this.name)
+*/
 
 this.getTasks().getByName("firstPluginConfig").doLast {
     println("in build.gradle firstPluginConfig  do last")
 }
 
 configurations {
-
-    firstConfiguration{
+    firstConfiguration {
         description("This is the first configuration")
 
     }

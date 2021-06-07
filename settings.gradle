@@ -3,6 +3,7 @@ include ':app'
 include ':firstplugin'
 
 
+/*
 this.gradle.addBuildListener(new BuildListener() {
     @Override
     void buildStarted(Gradle gradle) {
@@ -31,3 +32,4 @@ this.gradle.addBuildListener(new BuildListener() {
         println("in settings.gradle buildFinished ")
     }
 })
+*/

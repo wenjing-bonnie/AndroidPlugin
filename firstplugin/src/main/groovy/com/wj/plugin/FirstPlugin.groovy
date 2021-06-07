@@ -19,6 +19,10 @@ class FirstPlugin implements Plugin<Project> {
         TaskContainer taskContainer = project.getTasks()
         //create()：Creates a Task with the given name and adds it to this container.
         FirstPluginConfigTask task = taskContainer.create("firstPluginConfig", FirstPluginConfigTask.class)
+        task.doLast {
+            System.out.println("=== FirstPluginConfigTask do last in FirstPlugin Project ===")
+        }
+
         ConfigurationContainer configurationContainer = project.getConfigurations()
         DependencyHandler dependencyHandler = project.getDependencies()
         RepositoryHandler repositoryHandler = project.getRepositories()

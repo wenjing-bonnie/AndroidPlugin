@@ -17,12 +17,12 @@ public class FirstPluginConfigTask extends DefaultTask {
     @Input
     public void setSdkVersion(String sdk) {
         this.sdkVersion = sdk;
-        System.out.println("FirstPluginConfigTask task  === "+sdk);
+        System.out.println("=== FirstPluginConfigTask @Input  === "+sdk);
     }
 
     @TaskAction
     public void setSdkVersion() {
-        System.out.println("FirstPluginConfigTask task  setSdkVersion === ");
+        System.out.println("=== FirstPluginConfigTask  @TaskAction  setSdkVersion === ");
     }
 
 }
