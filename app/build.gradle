@@ -29,12 +29,32 @@ android {
 }
 
 task firstTask {
+    //创建一个Action，添加到Action列表的头部
+    doFirst {new Action<Task>(){
+        @Override
+        void execute(Task task) {
+            println("in build.gradle firstTask do first in new Action")
+        }
+    }}
     println("in build.gradle firstTask ")
+    //创建一个Action，添加到Action列表到尾部
     doLast {
         println("in build.gradle firstTask do last")
     }
-
 }
+task ("secondTask"){
+    println("in build.gradle secondTask by (string) ")
+}
+
+//自定义Task
+/*
+
+task (thirdTask){
+    println("in build.gradle thirdTask by () ")
+}
+task copyTask(type:Copy){
+    println("in build.gradle copyTask ")
+}*/
 
 firstTask.doFirst {
     println(" in build.gradle do first")
@@ -43,9 +63,17 @@ firstTask.doLast {
     println("in build.gradle do last")
 }
 
+/*
+task firstConfigTask(){
+
+}
+*/
+
 firstPluginConfig {
     sdkVersion '1.0.0'
+
 }
+
 
 /*
 //配置前

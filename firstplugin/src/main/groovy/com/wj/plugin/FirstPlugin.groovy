@@ -15,6 +15,8 @@ class FirstPlugin implements Plugin<Project> {
         System.out.println("================")
         System.out.println("First Plugin")
         System.out.println("================")
+
+        //2.通过继承DefaultTask，创建一个Task
         //获取当前project中的TaskContainer
         TaskContainer taskContainer = project.getTasks()
         //create()：Creates a Task with the given name and adds it to this container.
@@ -23,6 +25,11 @@ class FirstPlugin implements Plugin<Project> {
             System.out.println("=== FirstPluginConfigTask do last in FirstPlugin Project ===")
         }
 
+        taskContainer.create("secondTaskInProject", {
+            println("===== secondTaskInProject ==== ")
+        })
+
+        //在build.gradle中都有相应的配置项
         ConfigurationContainer configurationContainer = project.getConfigurations()
         DependencyHandler dependencyHandler = project.getDependencies()
         RepositoryHandler repositoryHandler = project.getRepositories()
