@@ -6,8 +6,11 @@ package com.wj.global.gradle;
  * @author wenjing.liu
  */
 public class SystemOutPrint {
+    private final static boolean DEBUG = true;
 
     public static void print(String info) {
-        System.out.println("~~~~~~~~~   " + info);
+        if (DEBUG) {
+            System.out.println("~~~~~~GlobalGradleProject~~~~~~~~   " + info);
+        }
     }
 }

@@ -1,5 +1,7 @@
 package com.wj.plugin.task;
 
+import com.wj.plugin.SystemOutPrint;
+
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
@@ -17,12 +19,12 @@ public class FirstPluginConfigTask extends DefaultTask {
     @Input
     public void setSdkVersion(String sdk) {
         this.sdkVersion = sdk;
-        System.out.println("=== FirstPluginConfigTask @Input  === "+sdk);
+        SystemOutPrint.println("FirstPluginConfigTask @Input sdk = "+sdk);
     }
 
     @TaskAction
     public void taskAction() {
-        System.out.println("=== FirstPluginConfigTask  @TaskAction  setSdkVersion === ");
+        SystemOutPrint.println("FirstPluginConfigTask  @TaskAction  setSdkVersion ");
     }
 
 }

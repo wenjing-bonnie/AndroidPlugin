@@ -9,12 +9,12 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.tasks.TaskContainer
 
-class FirstPlugin implements Plugin<Project> {
+class FirstPluginProject implements Plugin<Project> {
     @Override
     void apply(Project project) {
-        System.out.println("================")
-        System.out.println("First Plugin")
-        System.out.println("================")
+        SystemOutPrint.println("================")
+        SystemOutPrint.println("First Plugin")
+        SystemOutPrint.println("================")
 
         //2.通过继承DefaultTask，创建一个Task
         //获取当前project中的TaskContainer
@@ -22,11 +22,11 @@ class FirstPlugin implements Plugin<Project> {
         //create()：Creates a Task with the given name and adds it to this container.
         FirstPluginConfigTask task = taskContainer.create("firstPluginConfig", FirstPluginConfigTask.class)
         task.doLast {
-            System.out.println("=== FirstPluginConfigTask do last in FirstPlugin Project ===")
+            SystemOutPrint.println("=== FirstPluginConfigTask do last in FirstPlugin Project ===")
         }
         //1.
         project.task("secondTaskInProject"){
-            println("===== secondTaskInProject ==== ")
+            SystemOutPrint.println("===== secondTaskInProject ==== ")
         }
 
         //在build.gradle中都有相应的配置项

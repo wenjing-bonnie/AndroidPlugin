@@ -2,6 +2,7 @@ package com.wj.global.gradle
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.Task
 
 
 public class GlobalGradleProject implements Plugin<Project> {
@@ -12,6 +13,10 @@ public class GlobalGradleProject implements Plugin<Project> {
         SystemOutPrint.print(" Global Gradle Project ")
         SystemOutPrint.print(" ~~~~~~~~~~~~~~ ")
 
-        project.getTasks().create("GlobalGradleConfig", GlobalGradleConfig.class);
+        Task task =project.getTasks().create("GlobalGradleConfig", GlobalGradleConfig.class)
+       // project.getTasks().findByName("classes").dependsOn(task)
+        task.doLast {
+            SystemOutPrint.print(" GlobalGradleConfig do last")
+        }
     }
 }

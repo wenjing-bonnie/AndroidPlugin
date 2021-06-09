@@ -35,41 +35,39 @@ task firstTask {
     doFirst {new Action<Task>(){
         @Override
         void execute(Task task) {
-            println("in build.gradle firstTask do first in new Action")
+            println("=~app in build.gradle firstTask do first in new Action")
         }
     }}
-    println("in build.gradle firstTask ")
+    println("=~app in build.gradle firstTask ")
     //创建一个Action，添加到Action列表到尾部
     doLast {
-        println("in build.gradle firstTask do last")
+        println("=~app in build.gradle firstTask do last")
     }
     //dependsOn()
 }
-task ("secondTask") {
-    println("in build.gradle secondTask by (string) ")
-}
-//tasks.findByName('assembleDebug').doLast {
-//    println("====== assembleDebug do Last")
-//}
+
 
 //自定义Task
 /*
-
+task ("secondTask") {
+    println("=~app in build.gradle secondTask by (string) ")
+}
 task (thirdTask){
-    println("in build.gradle thirdTask by () ")
+    println("=~app in build.gradle thirdTask by () ")
 }
 */
-task copyTask(type:Copy){
-    println("in build.gradle copyTask ")
-    from('src/main/AndroidManifest.xml')
-    into 'src/main/java'
+task taskActionTask(type: com.wj.global.gradle.GlobalGradleTask){
+    doLast {
+        println("=~app in build.gradle  do last")
+    }
 }
 
+
 firstTask.doFirst {
-    println(" in build.gradle do first")
+    println("=~app  in build.gradle do first")
 }
 firstTask.doLast {
-    println("in build.gradle do last")
+    println("=~app  in build.gradle do last")
 }
 
 firstPluginConfig {
@@ -93,7 +91,7 @@ this.afterEvaluate {
 */
 
 this.getTasks().getByName("firstPluginConfig").doLast {
-    println("in build.gradle firstPluginConfig  do last")
+    println("=~app in build.gradle firstPluginConfig  do last")
 }
 
 configurations {
