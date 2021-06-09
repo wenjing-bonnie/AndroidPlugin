@@ -41,10 +41,14 @@ task firstTask {
     doLast {
         println("in build.gradle firstTask do last")
     }
+    //dependsOn()
 }
-task ("secondTask"){
+task ("secondTask") {
     println("in build.gradle secondTask by (string) ")
 }
+//tasks.findByName('assembleDebug').doLast {
+//    println("====== assembleDebug do Last")
+//}
 
 //自定义Task
 /*
@@ -52,9 +56,12 @@ task ("secondTask"){
 task (thirdTask){
     println("in build.gradle thirdTask by () ")
 }
+*/
 task copyTask(type:Copy){
     println("in build.gradle copyTask ")
-}*/
+    from('src/main/AndroidManifest.xml')
+    into 'src/main/java'
+}
 
 firstTask.doFirst {
     println(" in build.gradle do first")

@@ -24,10 +24,10 @@ class FirstPlugin implements Plugin<Project> {
         task.doLast {
             System.out.println("=== FirstPluginConfigTask do last in FirstPlugin Project ===")
         }
-
-        taskContainer.create("secondTaskInProject", {
+        //1.
+        project.task("secondTaskInProject"){
             println("===== secondTaskInProject ==== ")
-        })
+        }
 
         //在build.gradle中都有相应的配置项
         ConfigurationContainer configurationContainer = project.getConfigurations()

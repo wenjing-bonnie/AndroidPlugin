@@ -50,6 +50,9 @@ uploadArchives {
 //=== 方法二： 生成maven依赖库
 task deleteLocalMaven(type: Delete){
     delete '../plugins'
+    doLast {
+        println "=== task delete is finished ==="
+    }
 }
 uploadArchives {
 
@@ -68,6 +71,14 @@ uploadArchives {
             //本地maven
             repository(url: uri('../plugins'))
         }
+    }
+
+
+
+    task copyTask(type: Copy){
+        from 'build/ivy.xml'
+        into 'src/main'
+        println("copy Task")
     }
 }
 
