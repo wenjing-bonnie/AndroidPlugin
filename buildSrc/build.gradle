@@ -1,9 +1,9 @@
 //apply plugin: 'groovy'
 plugins {
     id 'groovy'
-   // id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+    // id 'org.jetbrains.kotlin.jvm' version '1.3.72'
 }
-
+def prefix = "~~~~~~GlobalGradleProject~~~~~~~~"
 
 dependencies {
     //gradle sdk
@@ -21,7 +21,7 @@ task copyTask(type: Copy) {
     from 'copyTask.txt'
     into 'src/main'
     doLast {
-        println("~~~~~~ copy Task in global Gradle project do last")
+        println(prefix + " Task of copy do last")
     }
 }
 
