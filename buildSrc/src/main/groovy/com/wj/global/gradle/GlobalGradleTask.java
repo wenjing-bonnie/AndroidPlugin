@@ -6,6 +6,7 @@ import org.gradle.api.tasks.TaskAction;
 /**
  * Created by wenjing.liu on 2021/6/9 in J1.
  *
+ * 一个Task
  * @author wenjing.liu
  */
 public class GlobalGradleTask extends DefaultTask {

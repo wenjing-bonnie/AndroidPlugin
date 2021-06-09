@@ -2,6 +2,8 @@ package com.wj.plugin;
 
 /**
  * Created by wenjing.liu on 2021/6/9 in J1.
+ * <p>
+ * 日志输出
  *
  * @author wenjing.liu
  */

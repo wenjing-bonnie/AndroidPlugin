@@ -9,6 +9,13 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.tasks.TaskContainer
 
+/**
+ *
+ * Project 相当于一个build.gradle文件
+ *
+ * @author wenjing.liu
+ */
+
 class FirstPluginProject implements Plugin<Project> {
     @Override
     void apply(Project project) {
@@ -25,7 +32,7 @@ class FirstPluginProject implements Plugin<Project> {
             SystemOutPrint.println("=== FirstPluginConfigTask do last in FirstPlugin Project ===")
         }
         //1.
-        project.task("secondTaskInProject"){
+        project.task("secondTaskInProject") {
             SystemOutPrint.println("===== secondTaskInProject ==== ")
         }
 

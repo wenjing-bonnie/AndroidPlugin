@@ -28,7 +28,7 @@ task makeJar(type: org.gradle.jvm.tasks.Jar) {
     //扩展名，默认的为jar
     //archiveExtension = "extension"
     doLast {
-        println "=== task make jar is finished ==="
+        println "=====FirstPluginProject===== task of make jar is finished ==="
     }
 }
 
@@ -51,7 +51,7 @@ uploadArchives {
 task deleteLocalMaven(type: Delete){
     delete '../plugins'
     doLast {
-        println "=== task delete is finished ==="
+        println "=====FirstPluginProject=====  task of delete is finished ==="
     }
 }
 uploadArchives {
