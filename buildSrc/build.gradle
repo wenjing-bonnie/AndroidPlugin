@@ -1,0 +1,27 @@
+//apply plugin: 'groovy'
+plugins {
+    id 'groovy'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+}
+
+
+dependencies {
+    //gradle sdk
+    implementation gradleApi()
+    //groovy sdk
+    implementation localGroovy()
+    //kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+}
+
+repositories {
+    mavenCentral()
+}
+task copyTask(type: Copy) {
+    from 'build/ivy.xml'
+    into 'src/main'
+    println("~~~~~~ copy Task in global Gradle project")
+}
+
+
+

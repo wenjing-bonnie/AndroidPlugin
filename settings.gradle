@@ -2,7 +2,6 @@ rootProject.name = "AndroidPlugin"
 include ':app'
 include ':firstplugin'
 
-
 /*
 this.gradle.addBuildListener(new BuildListener() {
     @Override
@@ -33,3 +32,4 @@ this.gradle.addBuildListener(new BuildListener() {
     }
 })
 */
+

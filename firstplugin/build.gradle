@@ -14,6 +14,12 @@ repositories {
     //maven{ url'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
 }
 
+task copyTask(type: Copy){
+    from 'build/ivy.xml'
+    into 'src/main'
+    println("copy Task")
+}
+
 //==== 方法一：打包成Jar包的方式 begin
 def marvenjar = 'mavenjar'
 //默认名字是 [archiveBaseName]-[archiveAppendix]-[archiveVersion]-[archiveClassifier].[archiveExtension]
@@ -71,14 +77,6 @@ uploadArchives {
             //本地maven
             repository(url: uri('../plugins'))
         }
-    }
-
-
-
-    task copyTask(type: Copy){
-        from 'build/ivy.xml'
-        into 'src/main'
-        println("copy Task")
     }
 }
 

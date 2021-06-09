@@ -1,6 +1,8 @@
+
 plugins {
     id 'com.android.application'
     id 'com.wj.firstplugin'
+    id 'global.gradle'
 }
 
 android {
@@ -70,18 +72,13 @@ firstTask.doLast {
     println("in build.gradle do last")
 }
 
-/*
-task firstConfigTask(){
-
-}
-*/
-
 firstPluginConfig {
     sdkVersion '1.0.0'
-
 }
 
-
+GlobalGradleConfig {
+    version '1.0.0'
+}
 /*
 //配置前
 this.beforeEvaluate {
