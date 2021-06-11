@@ -13,7 +13,7 @@ public class SystemOutPrint {
 
     public static void println(String info) {
         if (DEBUG) {
-            System.out.println("=====FirstPluginProject=====  " + info);
+            System.out.println("%%%%%%%%% FirstPluginProject %%%%%%%%% " + info);
         }
     }
 }
