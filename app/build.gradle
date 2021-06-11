@@ -1,4 +1,3 @@
-
 plugins {
     id 'com.android.application'
     id 'com.wj.firstplugin'
@@ -30,18 +29,22 @@ android {
     // }
 }
 
+def prefix = "=~=~=~=~=~app=~=~=~=~=~ "
+
 task firstTask {
     //创建一个Action，添加到Action列表的头部
-    doFirst {new Action<Task>(){
-        @Override
-        void execute(Task task) {
-            println("=~app in build.gradle firstTask do first in new Action")
+    doFirst {
+        new Action<Task>() {
+            @Override
+            void execute(Task task) {
+                println(prefix + " firstTask do first in new Action")
+            }
         }
-    }}
-    println("=~app in build.gradle firstTask ")
+    }
+    println(prefix + " firstTask ")
     //创建一个Action，添加到Action列表到尾部
     doLast {
-        println("=~app in build.gradle firstTask do last")
+        println(prefix + " firstTask do last")
     }
     //dependsOn()
 }
@@ -56,18 +59,18 @@ task (thirdTask){
     println("=~app in build.gradle thirdTask by () ")
 }
 */
-task taskActionTask(type: com.wj.global.gradle.GlobalGradleTask){
+task taskActionTask(type: com.wj.global.gradle.GlobalGradleTask) {
     doLast {
-        println("=~app in build.gradle  do last")
+        println(prefix + " GlobalGradleTask do last")
     }
 }
 
 
 firstTask.doFirst {
-    println("=~app  in build.gradle do first")
+    println(prefix + "  first task do first")
 }
 firstTask.doLast {
-    println("=~app  in build.gradle do last")
+    println(prefix + " first task do last")
 }
 
 firstPluginConfig {
@@ -91,13 +94,21 @@ this.afterEvaluate {
 */
 
 this.getTasks().getByName("firstPluginConfig").doLast {
-    println("=~app in build.gradle firstPluginConfig  do last")
+    println(prefix + " firstPluginConfig  do last")
 }
 
 configurations {
     firstConfiguration {
         description("This is the first configuration")
 
+    }
+}
+
+task cleanTest(type: Delete) {
+    delete 'src/testdelete.txt'
+    println(prefix + " clean task ")
+    doLast {
+        println(prefix + " clean task do last")
     }
 }
 

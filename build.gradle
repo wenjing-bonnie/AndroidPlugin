@@ -3,7 +3,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven{
+        maven {
             //maven本地仓库
             url uri('plugins')
         }
@@ -25,6 +25,20 @@ allprojects {
     }
 }
 
+def prefix = "^^^^^^^^root build.gradle^^^^^^^^^ "
+//android Studio自动添加的就可以执行
 task clean(type: Delete) {
     delete rootProject.buildDir
+    doLast {
+        println(prefix + " clean task do last")
+    }
+}
+//添加的测试Task
+// 为什么而按照相同的方式复制的Task却不能执行呢？并且也不在该taskGraph中
+task copy(type: Copy) {
+    from 'testcopy.txt'
+    into 'app/'
+    doLast {
+        println(prefix + " test copy task do last")
+    }
 }

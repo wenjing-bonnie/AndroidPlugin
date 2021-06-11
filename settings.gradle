@@ -2,34 +2,69 @@ rootProject.name = "AndroidPlugin"
 include ':app'
 include ':firstplugin'
 
-/*
+def prefix = "<<<<<<<settings.gradle<<<<<<<<<<< "
+
+//监听Gradle的生命周期需要放在settings.gradle中，否则有些方法无法监听到
 this.gradle.addBuildListener(new BuildListener() {
     @Override
     void buildStarted(Gradle gradle) {
-
-        println("in settings.gradle buildStarted ")
-
+        println(prefix + "buildStarted ")
     }
 
     @Override
     void settingsEvaluated(Settings settings) {
-        println("in settings.gradle settingsEvaluated ")
+        println(prefix + "settingsEvaluated ")
     }
 
     @Override
     void projectsLoaded(Gradle gradle) {
-        println("in settings.gradle projectsLoaded ")
+        println(prefix + "projectsLoaded 已经完成Gradle构建的初始化阶段")
+        //会调用到对应的this.gradle.projectsLoaded{}
     }
 
     @Override
     void projectsEvaluated(Gradle gradle) {
-        println("in settings.gradle projectsEvaluated ")
+        println(prefix + " projectsEvaluated 已经完成Gradle构建的配置阶段")
     }
 
     @Override
     void buildFinished(BuildResult buildResult) {
-        println("in settings.gradle buildFinished ")
+        println(prefix + "buildFinished  已经完成Gralde构建的执行阶段")
     }
 })
-*/
+
+this.gradle.allprojects {
+    Project project ->
+        println(prefix + " allprojects Project name =  " + project.name)
+}
+
+//循环每个build.gradle来构建task依赖关系图
+this.gradle.beforeProject {
+    Project project ->
+        println(prefix + "beforeProject Project name = " + project.name)
+}
+
+this.gradle.afterProject {
+    Project project ->
+        println(prefix + "afterProject Project name  = " + project.name)
+}
+//输出task关系图中的所有task
+this.gradle.taskGraph.whenReady {
+    List<Task> taskList = this.gradle.taskGraph.allTasks
+    for (Task task : taskList) {
+        println(prefix + " in graph of task  = " + task.name+" in project = "+task.getProject())
+    }
+}
+
+
+this.gradle.taskGraph.beforeTask {
+    Task task ->
+        println(prefix + "beforeTask Task name = " + task.name)
+}
+
+this.gradle.taskGraph.afterTask {
+    Task task ->
+        println(prefix + "afterTask Task name = " + task.name)
+}
+
 

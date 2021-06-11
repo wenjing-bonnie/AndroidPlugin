@@ -25,7 +25,5 @@ task copyTask(type: Copy) {
     }
 }
 
-assemble.dependsOn(copyTask)
-
-
-
+assemble.dependsOn copyTask
+//copyTask.dependsOn assemble
