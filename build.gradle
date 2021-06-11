@@ -24,16 +24,15 @@ allprojects {
         //jcenter() // Warning: this repository is going to shut down soon
     }
 }
-
-def prefix = "^^^^^^^^root build.gradle^^^^^^^^^ "
+def prefix = "**********root build*************   "
 //android Studio自动添加的就可以执行
 task clean(type: Delete) {
     delete rootProject.buildDir
     doLast {
-        println(prefix + " clean task do last")
+        println(prefix + "Android Studio auto add clean task do last")
     }
     doFirst {
-        println(prefix + " clean task do first")
+        println(prefix + "Android Studio auto add clean task do first")
     }
 }
 //添加的测试Task
@@ -42,6 +41,6 @@ task copy(type: Copy) {
     from 'testcopy.txt'
     into 'app/'
     doLast {
-        println(prefix + " test copy task do last")
+        println(prefix + "test copy task do last")
     }
 }
