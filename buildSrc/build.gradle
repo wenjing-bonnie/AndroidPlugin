@@ -30,7 +30,7 @@ task copyTask(type: Copy) {
     }
 }
 
-assemble.dependsOn copyTask
+//assemble.dependsOn copyTask
 //copyTask.dependsOn assemble
 
 task syncTask(type: Sync) {
@@ -45,5 +45,16 @@ task syncTask(type: Sync) {
     }
 }
 
-assemble.dependsOn syncTask
+//assemble.dependsOn syncTask
+
+this.afterEvaluate {
+    tasks.matching {
+        Task task->
+            task.name.equals("compileJava")
+    }.each {
+        Task task ->
+            println(prefix + " afterEvaluate task name = " + task.name)
+            task.dependsOn(copyTask, syncTask)
+    }
+}
 
