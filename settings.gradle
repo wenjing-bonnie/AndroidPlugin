@@ -2,7 +2,7 @@ rootProject.name = "AndroidPlugin"
 include ':app'
 include ':firstplugin'
 
-def prefix = "<<<<<<<settings.gradle<<<<<<<<<<< "
+def prefix = "<<<<<<<settings.gradle<<<<<<<<<<    "
 
 //监听Gradle的生命周期需要放在settings.gradle中，否则有些方法无法监听到
 this.gradle.addBuildListener(new BuildListener() {
@@ -32,10 +32,10 @@ this.gradle.addBuildListener(new BuildListener() {
         println(prefix + "buildFinished  已经完成Gralde构建的执行阶段")
     }
 })
-
+//在初始化结束后，可以输出所有的Project实例
 this.gradle.allprojects {
     Project project ->
-        println(prefix + " allprojects Project name =  " + project.name)
+        println(prefix + "allprojects Project name =  " + project.name)
 }
 
 //循环每个build.gradle来构建task依赖关系图
@@ -52,11 +52,11 @@ this.gradle.afterProject {
 this.gradle.taskGraph.whenReady {
     List<Task> taskList = this.gradle.taskGraph.allTasks
     for (Task task : taskList) {
-        println(prefix + " in graph of task  = " + task.name+" in project = "+task.getProject())
+        println(prefix + "in graph of task  = " + task.name+" in project = "+task.getProject())
     }
 }
 
-
+//每个task的执行过程的监听
 this.gradle.taskGraph.beforeTask {
     Task task ->
         println(prefix + "beforeTask Task name = " + task.name)
