@@ -32,6 +32,9 @@ task clean(type: Delete) {
     doLast {
         println(prefix + " clean task do last")
     }
+    doFirst {
+        println(prefix + " clean task do first")
+    }
 }
 //添加的测试Task
 // 为什么而按照相同的方式复制的Task却不能执行呢？并且也不在该taskGraph中

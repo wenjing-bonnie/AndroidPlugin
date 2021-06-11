@@ -80,18 +80,6 @@ firstPluginConfig {
 GlobalGradleConfig {
     version '1.0.0'
 }
-/*
-//配置前
-this.beforeEvaluate {
-    println("in build.gradle beforeEvaluate")
-
-}
-//配置后
-this.afterEvaluate {
-    println("in build.gradle afterEvaluate ")
-
-}
-*/
 
 this.getTasks().getByName("firstPluginConfig").doLast {
     println(prefix + " firstPluginConfig  do last")
@@ -103,15 +91,6 @@ configurations {
 
     }
 }
-
-task cleanTest(type: Delete) {
-    delete 'src/testdelete.txt'
-    println(prefix + " clean task ")
-    doLast {
-        println(prefix + " clean task do last")
-    }
-}
-
 dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
