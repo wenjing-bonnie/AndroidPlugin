@@ -24,53 +24,35 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    //signingConfigs{
-
-    // }
 }
 
-def prefix = "=~=~=~=~=~app=~=~=~=~=~ "
+def prefix = "@@@@@@@@@@@@@@ app @@@@@@@@@@@@@   "
 
+//自定义Task
 task firstTask {
     //创建一个Action，添加到Action列表的头部
     doFirst {
-        new Action<Task>() {
-            @Override
-            void execute(Task task) {
-                println(prefix + " firstTask do first in new Action")
-            }
-        }
+        println(prefix + "firstTask do first")
     }
-    println(prefix + " firstTask ")
+    println(prefix + "firstTask ")
     //创建一个Action，添加到Action列表到尾部
     doLast {
-        println(prefix + " firstTask do last")
+        println(prefix + "firstTask do last")
     }
-    //dependsOn()
 }
 
+task("secondTask") {
+    println(prefix + "secondTask by (string) ")
+}
 
-//自定义Task
-/*
-task ("secondTask") {
-    println("=~app in build.gradle secondTask by (string) ")
+task(thirdTask) {
+    println(prefix + "thirdTask by () ")
 }
-task (thirdTask){
-    println("=~app in build.gradle thirdTask by () ")
-}
-*/
+
 task taskActionTask(type: com.wj.global.gradle.GlobalGradleTask) {
     doLast {
         println(prefix + " GlobalGradleTask do last")
     }
-}
-
-
-firstTask.doFirst {
-    println(prefix + "  first task do first")
-}
-firstTask.doLast {
-    println(prefix + " first task do last")
 }
 
 firstPluginConfig {
