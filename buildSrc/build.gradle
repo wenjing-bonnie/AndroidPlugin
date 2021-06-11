@@ -23,7 +23,27 @@ task copyTask(type: Copy) {
     doLast {
         println(prefix + " Task of copy do last")
     }
+    rename {
+            //重命名
+        String fileName ->
+            fileName = "copyTaskOk.txt"
+    }
 }
 
 assemble.dependsOn copyTask
 //copyTask.dependsOn assemble
+
+task syncTask(type: Sync) {
+    from 'copyTask.txt'
+    into 'src/main/synctest'
+    preserve {
+        //保持该文件不被覆盖
+        exclude 'src/main/synctest/syncexist.txt'
+    }
+    doLast {
+        println(prefix + "syncTask do last")
+    }
+}
+
+assemble.dependsOn syncTask
+

@@ -50,10 +50,10 @@ this.gradle.afterProject {
 }
 //输出task关系图中的所有task
 this.gradle.taskGraph.whenReady {
-    List<Task> taskList = this.gradle.taskGraph.allTasks
-    for (Task task : taskList) {
-        println(prefix + "in graph of task  = " + task.name+" in project = "+task.getProject())
-    }
+//    List<Task> taskList = this.gradle.taskGraph.allTasks
+//    for (Task task : taskList) {
+//        println(prefix + "in graph of task  = " + task.name+" in project = "+task.getProject())
+//    }
 }
 
 //每个task的执行过程的监听
