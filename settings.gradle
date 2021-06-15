@@ -35,7 +35,7 @@ this.gradle.addBuildListener(new BuildListener() {
 //在初始化结束后，可以输出所有的Project实例
 this.gradle.allprojects {
     Project project ->
-        println(prefix + "allprojects Project name =  " + project.name)
+       // println(prefix + "allprojects Project name =  " + project.name)
 }
 
 //循环每个build.gradle来构建task依赖关系图
@@ -46,7 +46,7 @@ this.gradle.beforeProject {
 
 this.gradle.afterProject {
     Project project ->
-        println(prefix + "afterProject Project name  = " + project.name)
+        //println(prefix + "afterProject Project name  = " + project.name)
 }
 //输出task关系图中的所有task
 this.gradle.taskGraph.whenReady {
@@ -59,12 +59,12 @@ this.gradle.taskGraph.whenReady {
 //每个task的执行过程的监听
 this.gradle.taskGraph.beforeTask {
     Task task ->
-        println(prefix + "beforeTask Task name = " + task.name)
+       // println(prefix + "beforeTask Task name = " + task.name)
 }
 
 this.gradle.taskGraph.afterTask {
-    Task task ->
-        println(prefix + "afterTask Task name = " + task.name)
+    it ->
+       // println(prefix + "afterTask Task name = " + it.name)
 }
 
 

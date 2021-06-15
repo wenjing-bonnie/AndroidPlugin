@@ -53,6 +53,19 @@ task taskActionTask(type: com.wj.global.gradle.GlobalGradleTask) {
     doLast {
         println(prefix + " GlobalGradleTask do last")
     }
+    doFirst {
+        println(prefix + " GlobalGradleTask do first")
+    }
+}
+
+
+//assemble.dependsOn(taskActionTask)
+this.afterEvaluate {
+    getTasks().matching {
+        it.name.equals("preBuild")
+    }.each {
+        it.dependsOn(firstTask,secondTask,thirdTask,taskActionTask)
+    }
 }
 
 firstPluginConfig {
@@ -61,10 +74,6 @@ firstPluginConfig {
 
 GlobalGradleConfig {
     version '1.0.0'
-}
-
-this.getTasks().getByName("firstPluginConfig").doLast {
-    println(prefix + " firstPluginConfig  do last")
 }
 
 configurations {
