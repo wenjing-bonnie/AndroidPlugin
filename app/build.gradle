@@ -24,6 +24,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    productFlavors{
+        
+    }
 }
 
 def prefix = "@@@@@@@@@@@@@@ app @@@@@@@@@@@@@   "
@@ -34,28 +38,28 @@ task firstTask {
     doFirst {
         println(prefix + "firstTask do first")
     }
-    println(prefix + "firstTask ")
+//    println(prefix + "firstTask ")
     //创建一个Action，添加到Action列表到尾部
-    doLast {
-        println(prefix + "firstTask do last")
-    }
+//    doLast {
+//        println(prefix + "firstTask do last")
+//    }
 }
 
 task("secondTask") {
-    println(prefix + "secondTask by (string) ")
+ //   println(prefix + "secondTask by (string) ")
 }
 
 task(thirdTask) {
-    println(prefix + "thirdTask by () ")
+//    println(prefix + "thirdTask by () ")
 }
 
 task taskActionTask(type: com.wj.global.gradle.GlobalGradleTask) {
     doLast {
         println(prefix + " GlobalGradleTask do last")
     }
-    doFirst {
-        println(prefix + " GlobalGradleTask do first")
-    }
+//    doFirst {
+//        println(prefix + " GlobalGradleTask do first")
+//    }
 }
 
 
