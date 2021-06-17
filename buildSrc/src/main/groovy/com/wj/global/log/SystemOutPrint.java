@@ -1,4 +1,4 @@
-package com.wj.global.gradle;
+package com.wj.global.log;
 
 /**
  * Created by wenjing.liu on 2021/6/9 in J1.

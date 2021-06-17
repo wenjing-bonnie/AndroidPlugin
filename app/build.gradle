@@ -1,3 +1,4 @@
+import  com.wj.global.gradle.GlobalGradleConfig
 plugins {
     id 'com.android.application'
     id 'com.wj.firstplugin'
@@ -25,8 +26,17 @@ android {
         }
     }
 
-    productFlavors{
-        
+    productFlavors {
+//        huawei {
+//            manifestPlaceholders = [channel: "huawei"]
+//            dimension = "version"
+//        }
+//
+//        oppo {
+//            manifestPlaceholders = [channel: "oppo"]
+//            dimension = "version"
+//        }
+
     }
 }
 
@@ -46,29 +56,30 @@ task firstTask {
 }
 
 task("secondTask") {
- //   println(prefix + "secondTask by (string) ")
+    //   println(prefix + "secondTask by (string) ")
 }
 
 task(thirdTask) {
 //    println(prefix + "thirdTask by () ")
 }
 
-task taskActionTask(type: com.wj.global.gradle.GlobalGradleTask) {
+task taskActionTask(type:  GlobalGradleConfig) {
     doLast {
-        println(prefix + " GlobalGradleTask do last")
+        println(prefix + " GlobalGradleConfig do last")
     }
 //    doFirst {
 //        println(prefix + " GlobalGradleTask do first")
 //    }
 }
-
+//可以设置taskActionTask是否执行
+//taskActionTask.enabled true
 
 //assemble.dependsOn(taskActionTask)
 this.afterEvaluate {
     getTasks().matching {
         it.name.equals("preBuild")
     }.each {
-        it.dependsOn(firstTask,secondTask,thirdTask,taskActionTask)
+        it.dependsOn(firstTask, secondTask, thirdTask, taskActionTask)
     }
 }
 
@@ -76,9 +87,6 @@ firstPluginConfig {
     sdkVersion '1.0.0'
 }
 
-GlobalGradleConfig {
-    version '1.0.0'
-}
 
 configurations {
     firstConfiguration {

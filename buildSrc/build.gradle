@@ -1,3 +1,4 @@
+
 //apply plugin: 'groovy'
 plugins {
     id 'groovy'
@@ -17,6 +18,13 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+//task templateTaskInBuild(type: TemplateTask) {
+//    doFirst {
+//        println(prefix + " template do first ========")
+//    }
+//}
+
 task copyTask(type: Copy) {
     from 'copyTask.txt'
     into 'src/main'
@@ -48,12 +56,13 @@ task syncTask(type: Sync) {
 //assemble.dependsOn syncTask
 
 this.afterEvaluate {
+    //Task templateTask = getByName("TemplateTask")
     tasks.matching {
-        Task task->
+        Task task ->
             task.name.equals("compileJava")
     }.each {
         Task task ->
-            println(prefix + " afterEvaluate task name = " + task.name)
+            println(prefix + " in afterEvaluate find \"" + task.name + " \"")
             task.dependsOn(copyTask, syncTask)
     }
 }
