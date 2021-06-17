@@ -1,23 +1,6 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
-
-def prefix = " =====FirstPluginProject=====  "
-
-task firstTask(type: com.wj.plugin.task.FirstPluginConfigTask) {
-    doFirst {
-        println prefix + " task of FirstPluginConfigTask do first"
-    }
-}
-
-this.afterEvaluate {
-    getTasks().matching {
-        it.name.equals("assemble")
-    }.each {
-        it.dependsOn(firstTask)
-    }
-}
-
-
+/**项目依赖*/
 dependencies {
     //gradle sdk
     implementation gradleApi()
@@ -30,10 +13,36 @@ repositories {
     //maven{ url'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
 }
 
-//==== 方法一：打包成Jar包的方式 begin
+/**项目自定义实现具体功能的Task*/
+def prefix = "%%%%%%%%% FirstPluginProject %%%%%%%%%  "
+
+task firstPluginConfig(type: com.wj.plugin.task.FirstPluginConfigTask) {
+}
+
+task handleTemplateTask(type: com.wj.plugin.task.HandleTemplateTask) {
+    doLast {
+        println prefix + " The HandleTemplateTask is finished !!! "
+    }
+    doFirst {
+        println prefix + " The HandleTemplateTask do first !!! "
+    }
+}
+
+/**将自定义的的Task添加到依赖关系图中*/
+this.afterEvaluate {
+    getTasks().matching {
+        it.name.equals("compileJava")
+    }.each {
+        it.dependsOn(firstPluginConfig, handleTemplateTask)
+    }
+}
+
+/**将项目打包给到其他module使用*/
+
+/**(方法一)：打包成Jar包的方式 */
 def marvenjar = 'mavenjar'
 
-//默认名字是 [archiveBaseName]-[archiveAppendix]-[archiveVersion]-[archiveClassifier].[archiveExtension]
+/**默认名字是 [archiveBaseName]-[archiveAppendix]-[archiveVersion]-[archiveClassifier].[archiveExtension]*/
 task makeJar(type: org.gradle.jvm.tasks.Jar) {
     //删除之前创建的文件夹
     delete marvenjar
@@ -45,7 +54,7 @@ task makeJar(type: org.gradle.jvm.tasks.Jar) {
     //扩展名，默认的为jar
     //archiveExtension = "extension"
     doLast {
-        println prefix + " task of make jar is finished ==="
+        println prefix + " The task of make jar is finished !!!"
     }
 }
 
@@ -62,13 +71,12 @@ uploadArchives {
         }
     }
 }
-//==== 打包成Jar包的方式 end
 
-//=== 方法二： 生成maven依赖库
+/**=== (方法二)： 生成maven依赖库 */
 task deleteLocalMaven(type: Delete) {
     delete '../plugins'
     doLast {
-        println prefix + " task of delete is finished ==="
+        println prefix + " The task of delete is finished !!!"
     }
 }
 uploadArchives {

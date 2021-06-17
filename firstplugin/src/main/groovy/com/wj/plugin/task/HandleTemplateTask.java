@@ -18,25 +18,33 @@ import java.io.File;
  *
  * @author wenjing.liu
  */
-public class TemplateTask extends DefaultTask {
+public class HandleTemplateTask extends DefaultTask {
     private String compileSdk;
     private File inputFile;
     //private TemplateEngine
 
-    @Input
+
     public String getCompileSdk() {
         SystemOutPrint.println(" compileSdk = " + compileSdk);
         return compileSdk;
     }
 
-    @InputFile
+    /**
+     * 必须有setter方法
+     */
+    @Input
+    public void setCompileSdk(String sdk) {
+        this.compileSdk = sdk;
+    }
+
+    // @InputFile
     public File getInputFile() {
         SystemOutPrint.println(" inputFile = " + inputFile.getPath());
         return inputFile;
     }
 
 
-    @InputFile
+    //@InputFile
     public void taskInput(File file) {
         this.getInputs().file(file);
     }

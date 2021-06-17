@@ -87,6 +87,10 @@ firstPluginConfig {
     sdkVersion '1.0.0'
 }
 
+handleTemplateTask{
+    compileSdk "1.0.0"
+}
+
 
 configurations {
     firstConfiguration {

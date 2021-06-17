@@ -1,10 +1,8 @@
 package com.wj.global.gradle
 
 import com.wj.global.log.SystemOutPrint
-import com.wj.global.task.TemplateTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
 
 /**
  * Project相当于build.gradle
