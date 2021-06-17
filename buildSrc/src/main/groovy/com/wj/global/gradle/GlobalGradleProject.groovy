@@ -20,7 +20,7 @@ class GlobalGradleProject implements Plugin<Project> {
 
         //Task task = project.getTasks().create("GlobalGradleConfig", GlobalGradleConfig.class)
 //        Task templateTask = project.getTasks().create("TemplateTask", TemplateTask.class)
-//        Task templateTask1 = project.getTasks().create("TemplateTask1", com.wj.global.gradle.TemplateTask.class)
+         //Task templateTask1 = project.getTasks().create("TemplateTask1", com.wj.global.gradle.TemplateTask.class)
 //        addTemplateTaskDependsOn(templateTask1,project)
 //        templateTask1.doFirst {
 //            SystemOutPrint.print(" ~~~~~~templateTask1 ~~~~~~ do First ")

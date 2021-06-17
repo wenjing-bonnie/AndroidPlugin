@@ -1,6 +1,22 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
 
+def prefix = " =====FirstPluginProject=====  "
+
+task firstTask(type: com.wj.plugin.task.FirstPluginConfigTask) {
+    doFirst {
+        println prefix + " task of FirstPluginConfigTask do first"
+    }
+}
+
+this.afterEvaluate {
+    getTasks().matching {
+        it.name.equals("assemble")
+    }.each {
+        it.dependsOn(firstTask)
+    }
+}
+
 
 dependencies {
     //gradle sdk
@@ -16,6 +32,7 @@ repositories {
 
 //==== 方法一：打包成Jar包的方式 begin
 def marvenjar = 'mavenjar'
+
 //默认名字是 [archiveBaseName]-[archiveAppendix]-[archiveVersion]-[archiveClassifier].[archiveExtension]
 task makeJar(type: org.gradle.jvm.tasks.Jar) {
     //删除之前创建的文件夹
@@ -28,7 +45,7 @@ task makeJar(type: org.gradle.jvm.tasks.Jar) {
     //扩展名，默认的为jar
     //archiveExtension = "extension"
     doLast {
-        println "=====FirstPluginProject===== task of make jar is finished ==="
+        println prefix + " task of make jar is finished ==="
     }
 }
 
@@ -48,10 +65,10 @@ uploadArchives {
 //==== 打包成Jar包的方式 end
 
 //=== 方法二： 生成maven依赖库
-task deleteLocalMaven(type: Delete){
+task deleteLocalMaven(type: Delete) {
     delete '../plugins'
     doLast {
-        println "=====FirstPluginProject=====  task of delete is finished ==="
+        println prefix + " task of delete is finished ==="
     }
 }
 uploadArchives {
