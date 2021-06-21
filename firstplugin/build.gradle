@@ -1,3 +1,5 @@
+import com.wj.plugin.task.HandleTemplateTask
+import com.wj.plugin.task.FirstPluginConfigTask
 apply plugin: 'groovy'
 apply plugin: 'maven'
 /**项目依赖*/
@@ -16,10 +18,10 @@ repositories {
 /**项目自定义实现具体功能的Task*/
 def prefix = "%%%%%%%%% FirstPluginProject %%%%%%%%%  "
 
-task firstPluginConfig(type: com.wj.plugin.task.FirstPluginConfigTask) {
+task firstPluginConfig(type: FirstPluginConfigTask) {
 }
 
-task handleTemplateTask(type: com.wj.plugin.task.HandleTemplateTask) {
+task handleTemplateTask(type: HandleTemplateTask) {
     doLast {
         println prefix + " The HandleTemplateTask is finished !!! "
     }
@@ -33,7 +35,7 @@ this.afterEvaluate {
     getTasks().matching {
         it.name.equals("compileJava")
     }.each {
-        it.dependsOn(firstPluginConfig, handleTemplateTask)
+        it.dependsOn(firstPluginConfig,handleTemplateTask)
     }
 }
 
@@ -73,15 +75,9 @@ uploadArchives {
 }
 
 /**=== (方法二)： 生成maven依赖库 */
-task deleteLocalMaven(type: Delete) {
-    delete '../plugins'
-    doLast {
-        println prefix + " The task of delete is finished !!!"
-    }
-}
 uploadArchives {
-
     repositories {
+        //delete '../plugins'
         mavenDeployer {
             //配置自定义插件的classpath
             pom.groupId = 'com.wj.plugin'
