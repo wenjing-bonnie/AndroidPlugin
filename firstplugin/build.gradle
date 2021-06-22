@@ -1,5 +1,5 @@
 import com.wj.plugin.task.HandleTemplateTask
-import com.wj.plugin.task.FirstPluginConfigTask
+
 apply plugin: 'groovy'
 apply plugin: 'maven'
 /**项目依赖*/
@@ -18,26 +18,29 @@ repositories {
 /**项目自定义实现具体功能的Task*/
 def prefix = "%%%%%%%%% FirstPluginProject %%%%%%%%%  "
 
-task firstPluginConfig(type: FirstPluginConfigTask) {
-}
-
+/**若增加HandleTemplateTask出现编译不通过的时候，需要删除plugins/里面的内容之后，重新编译该项目然后uploadArchives
+ * 最后在将该依赖添加到root project中*/
 task handleTemplateTask(type: HandleTemplateTask) {
+    //必须设置input，否则会抛出"No value has been specified for property"
+    setFileSourceDir(file("src/main/java/test.java"))
+    setFileFormat(".java")
     doLast {
         println prefix + " The HandleTemplateTask is finished !!! "
+        println prefix + getFileFormat()
     }
     doFirst {
         println prefix + " The HandleTemplateTask do first !!! "
     }
 }
 
-/**将自定义的的Task添加到依赖关系图中*/
-this.afterEvaluate {
-    getTasks().matching {
-        it.name.equals("compileJava")
-    }.each {
-        it.dependsOn(firstPluginConfig,handleTemplateTask)
-    }
-}
+
+/**将自定义的的Task添加到依赖关系图中，必须保证该Task的input和output已经设置并且还设置类型一致，
+ * 否则会抛出"No value has been specified for property"
+ * 遇到这种情况就是将root project中的com.wj.firstplugin的依赖去掉之后，重新编译项目，成功之后重新打包上传，
+ * 然后在root project在引入该插件
+ * */
+tasks.compileJava.dependsOn(handleTemplateTask)
+
 
 /**将项目打包给到其他module使用*/
 

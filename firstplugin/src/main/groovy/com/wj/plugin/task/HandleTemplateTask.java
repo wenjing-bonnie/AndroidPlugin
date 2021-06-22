@@ -21,34 +21,38 @@ import java.io.File;
  * @author wenjing.liu
  */
 public class HandleTemplateTask extends DefaultTask {
-    private String compileSdk;
-    private File interfaceSourceDir;
-
-
-//    public String getCompileSdk() {
-//        SystemOutPrint.println(" compileSdk = " + compileSdk);
-//        return compileSdk;
-//    }
-
     /**
-     * 必须有setter方法,否则在build.gradle配置该项的时候会识别不到
+     * 文件格式
      */
+    private String fileFormat;
+    /**
+     * 文件的路径
+     */
+    private File fileSourceDir;
+
+
     @Input
-    public void setCompileSdk(String sdk) {
-        this.compileSdk = sdk;
+    public String getFileFormat() {
+        return fileFormat;
     }
 
+    public void setFileFormat(String fileFormat) {
+        this.fileFormat = fileFormat;
+    }
 
-//    public void setInterfaceSourceDir(File interfaceSourceDir) {
-//        this.interfaceSourceDir = interfaceSourceDir;
-//    }
-//
-//    public File getInterfaceSourceDir() {
-//        return interfaceSourceDir;
-//    }
+    @InputFile
+    public File getFileSourceDir() {
+        return fileSourceDir;
+    }
+
+    public void setFileSourceDir(File fileSourceDir) {
+        this.fileSourceDir = fileSourceDir;
+    }
 
     @TaskAction
     public void taskAction() {
-        SystemOutPrint.println("task action in Default Task");
+        SystemOutPrint.println(" HandleTemplateTask taskAction ");
+        SystemOutPrint.println(" fileFormat = " + getFileFormat());
+        SystemOutPrint.println(" fileSourceDir = " + getFileSourceDir());
     }
 }
