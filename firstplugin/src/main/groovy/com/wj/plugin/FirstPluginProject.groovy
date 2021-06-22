@@ -25,14 +25,15 @@ class FirstPluginProject implements Plugin<Project> {
         SystemOutPrint.println("================")
         SystemOutPrint.println("First Plugin")
         SystemOutPrint.println("================")
-        //SystemOutPrint.println(" name = " + project.name)
-        //在这里是无法取到   TemplateSettingExtension extension的值，因为此时还没有构建到app中的build.gradle
-        TemplateSettingExtension extension = project.getExtensions().create("templateSettingExtension", TemplateSettingExtension)
+        /**（1）添加 TemplateSettingExtension
+         //在这里是无法取到  extension的值，因为此时还没有构建到app中的build.gradle*/
+        project.getExtensions().create("templateSettingExtension", TemplateSettingExtension)
+
+        /**（2）将功能的Task添加到app这个project的任务队列中*/
         Task task = project.getTasks().create("handleTemplateTask", HandleTemplateTask)
         task.setFileFormat(".java")
-        String path = project.getProjectDir().getAbsolutePath()+"/src/main/java/mvp/test.java"
+        String path = project.getProjectDir().getAbsolutePath() + "/src/main/java/mvp/test.java"
         task.setFileSourceDir(new File(path))
-
         //这里是返回的app的这个module，然后在app的project的所有tasks中添加该handleTemplateTask
         project.afterEvaluate {
             project.getTasks().matching {
