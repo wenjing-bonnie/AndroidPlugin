@@ -1,4 +1,4 @@
-import com.wj.plugin.task.HandleTemplateTask
+//import com.wj.plugin.task.HandleTemplateTask
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -8,6 +8,8 @@ dependencies {
     implementation gradleApi()
     //groovy sdk
     implementation localGroovy()
+
+    //implementation 'com.android.tools.build:gradle:2.3.3'
 }
 
 repositories {
@@ -19,19 +21,20 @@ repositories {
 def prefix = "%%%%%%%%% FirstPluginProject %%%%%%%%%  "
 
 /**若增加HandleTemplateTask出现编译不通过的时候，需要删除plugins/里面的内容之后，重新编译该项目然后uploadArchives
- * 最后在将该依赖添加到root project中*/
-task handleTemplateTask(type: HandleTemplateTask) {
-    //必须设置input，否则会抛出"No value has been specified for property"
-    setFileSourceDir(file("src/main/java/test.java"))
-    setFileFormat(".java")
-    doLast {
-        println prefix + " The HandleTemplateTask is finished !!! "
-        println prefix + getFileFormat()
-    }
-    doFirst {
-        println prefix + " The HandleTemplateTask do first !!! "
-    }
-}
+ * 最后在将该依赖添加到root project中
+ * TODO 通过这种方式添加的taskaction不执行*/
+//task handleTemplateTask(type: HandleTemplateTask) {
+//    //必须设置input，否则会抛出"No value has been specified for property"
+//    setFileSourceDir(file("src/main/java/test.java"))
+//    setFileFormat(".java")
+//    doLast {
+//        println prefix + " The HandleTemplateTask is finished !!! "
+//        println prefix + getFileFormat()
+//    }
+//    doFirst {
+//        println prefix + " The HandleTemplateTask do first !!! "
+//    }
+//}
 
 
 /**将自定义的的Task添加到依赖关系图中，必须保证该Task的input和output已经设置并且还设置类型一致，
@@ -39,7 +42,14 @@ task handleTemplateTask(type: HandleTemplateTask) {
  * 遇到这种情况就是将root project中的com.wj.firstplugin的依赖去掉之后，重新编译项目，成功之后重新打包上传，
  * 然后在root project在引入该插件
  * */
-tasks.compileJava.dependsOn(handleTemplateTask)
+//tasks.compileJava.dependsOn(handleTemplateTask)
+this.beforeEvaluate {
+    println(prefix + " in build.gradle beforeEvaluate")
+}
+
+this.afterEvaluate {
+    println(prefix + " in build.gradle afterEvaluate")
+}
 
 
 /**将项目打包给到其他module使用*/
@@ -93,7 +103,7 @@ uploadArchives {
             // }
 
             //本地maven
-            repository(url: uri('../plugins'))
+            repository(url: uri('../plugin'))
         }
     }
 }

@@ -2,7 +2,9 @@ package com.wj.plugin.task;
 
 import com.wj.plugin.SystemOutPrint;
 
+import org.apache.tools.ant.Task;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.TaskAction;

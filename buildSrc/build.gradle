@@ -25,6 +25,18 @@ repositories {
 //    }
 //}
 
+task syncTask(type: Sync) {
+    from 'copyTask.txt'
+    into 'src/main/synctest'
+    preserve {
+        //保持该文件不被覆盖
+        exclude 'src/main/synctest/syncexist.txt'
+    }
+    doLast {
+        println(prefix + "syncTask do last")
+    }
+}
+
 task copyTask(type: Copy) {
     from 'copyTask.txt'
     into 'src/main'
@@ -41,17 +53,7 @@ task copyTask(type: Copy) {
 //assemble.dependsOn copyTask
 //copyTask.dependsOn assemble
 
-task syncTask(type: Sync) {
-    from 'copyTask.txt'
-    into 'src/main/synctest'
-    preserve {
-        //保持该文件不被覆盖
-        exclude 'src/main/synctest/syncexist.txt'
-    }
-    doLast {
-        println(prefix + "syncTask do last")
-    }
-}
+
 
 //assemble.dependsOn syncTask
 
@@ -63,7 +65,7 @@ this.afterEvaluate {
     }.each {
         Task task ->
             println(prefix + " in afterEvaluate find \"" + task.name + " \"")
-            task.dependsOn(copyTask, syncTask)
+            task.dependsOn(syncTask,copyTask)
     }
 }
 

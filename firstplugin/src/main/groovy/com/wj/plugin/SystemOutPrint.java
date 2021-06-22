@@ -9,7 +9,7 @@ package com.wj.plugin;
  */
 public class SystemOutPrint {
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     public static void println(String info) {
         if (DEBUG) {

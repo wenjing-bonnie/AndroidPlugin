@@ -89,18 +89,9 @@ tasks.preBuild.dependsOn(firstTask, secondTask, thirdTask, taskActionTask)
 
 //自定义插件中的输入属性的设置
 //templateSettingExtension {
-//    compileSdkVersion ="1.0.0"
-//    interfaceSourceDir =fileTree("src/main/mvp")
-//    compileSdkVersion "1.0.0"
+//    compileSdk = "1.0.0"
+//    interfaceSourceDir = fileTree("src/main/mvp")
 //}
-
-//templateSettingExtension {
-//   compileSdk = "1.0.0"
-//    interfaceSourceDir = file("src/main/mvp")
-//}
-
-//templateSettingExtension.compileSdk = '1.0.0'
-//templateSettingExtension.interfaceSourceDir = file("src/main/mvp")
 
 configurations {
     firstConfiguration {

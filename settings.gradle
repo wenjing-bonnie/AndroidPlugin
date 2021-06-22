@@ -5,6 +5,7 @@ include ':firstplugin'
 def prefix = "<<<<<<<settings.gradle<<<<<<<<<<    "
 
 //监听Gradle的生命周期需要放在settings.gradle中，否则有些方法无法监听到
+
 this.gradle.addBuildListener(new BuildListener() {
     @Override
     void buildStarted(Gradle gradle) {
