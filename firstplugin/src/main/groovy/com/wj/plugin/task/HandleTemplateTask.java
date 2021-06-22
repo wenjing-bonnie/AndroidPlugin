@@ -52,8 +52,8 @@ public class HandleTemplateTask extends DefaultTask {
     }
 
     @TaskAction
-    public void taskAction() {
-        SystemOutPrint.println(" HandleTemplateTask taskAction ");
+    public void run() {
+        SystemOutPrint.println(" HandleTemplateTask is running ");
         SystemOutPrint.println(" fileFormat = " + getFileFormat());
         SystemOutPrint.println(" fileSourceDir = " + getFileSourceDir());
     }
