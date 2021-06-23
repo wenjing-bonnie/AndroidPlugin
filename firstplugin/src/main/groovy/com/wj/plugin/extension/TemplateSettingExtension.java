@@ -21,7 +21,6 @@ public class TemplateSettingExtension {
     private File interfaceSourceDir;
 
     public String getCompileSdk() {
-        SystemOutPrint.println(" compileSdk = " + compileSdk);
         return compileSdk;
     }
 
@@ -29,19 +28,18 @@ public class TemplateSettingExtension {
      * 必须有setter方法,否则在build.gradle配置该项的时候会识别不到
      */
 
-    public void setCompileSdk(String sdk) {
-        this.compileSdk = sdk;
-        SystemOutPrint.println(" compileSdk = " + compileSdk);
-    }
+//    public void setCompileSdk(String sdk) {
+//        this.compileSdk = sdk;
+//        SystemOutPrint.println(" compileSdk = " + compileSdk);
+//    }
 
 
-    public void setInterfaceSourceDir(File interfaceSourceDir) {
-        this.interfaceSourceDir = interfaceSourceDir;
-        SystemOutPrint.println(" interfaceSourceDir = " + interfaceSourceDir);
-    }
+//    public void setInterfaceSourceDir(File interfaceSourceDir) {
+//        this.interfaceSourceDir = interfaceSourceDir;
+//        SystemOutPrint.println(" interfaceSourceDir = " + interfaceSourceDir);
+//    }
 
     public File getInterfaceSourceDir() {
-        SystemOutPrint.println("interfaceSourceDir = "+interfaceSourceDir);
         return interfaceSourceDir;
     }
 

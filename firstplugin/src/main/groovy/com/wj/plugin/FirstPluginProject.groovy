@@ -5,7 +5,6 @@ import com.wj.plugin.task.HandleTemplateTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.tasks.TaskContainer
 
 /**
  *
@@ -25,28 +24,48 @@ class FirstPluginProject implements Plugin<Project> {
         SystemOutPrint.println("================")
         SystemOutPrint.println("First Plugin")
         SystemOutPrint.println("================")
-        /**（1）添加 TemplateSettingExtension
-         //在这里是无法取到  extension的值，因为此时还没有构建到app中的build.gradle*/
-        project.getExtensions().create("templateSettingExtension", TemplateSettingExtension)
-
+        /**（1）添加 TemplateSettingExtension*/
+        createExtensions(project)
         /**（2）将功能的Task添加到app这个project的任务队列中*/
+        addHandleTemplateTask(project)
+    }
+    /**
+     * 创建Extension
+     * @param project
+     */
+    void createExtensions(Project project) {
+        //在这里是无法取到  extension的值，因为此时还没有构建到app中的build.gradle
+        project.getExtensions().create(TemplateSettingExtension.TAG, TemplateSettingExtension)
+    }
+    /**
+     * 将HandleTemplateTask加入到任务队列中
+     * @param project
+     */
+    void addHandleTemplateTask(Project project) {
         Task task = project.getTasks().create("handleTemplateTask", HandleTemplateTask)
-        task.setFileFormat(".java")
-        String path = project.getProjectDir().getAbsolutePath() + "/src/main/java/mvp/test.java"
-        task.setFileSourceDir(new File(path))
+
+        setHandleTemplateTaskInputFromExtension(project)
         //这里是返回的app的这个module，然后在app的project的所有tasks中添加该handleTemplateTask
         project.afterEvaluate {
             project.getTasks().matching {
-                //SystemOutPrint.println(" matching name = " + it.name)
                 //如果将该插件放到'com.android.application',则在"preBuild"之前添加该Task
                 it.name.equals("preBuild")
-
             }.each {
-                //SystemOutPrint.println(" name = " + it.name)
                 it.dependsOn(task)
 
             }
         }
+    }
+
+    void setHandleTemplateTaskInputFromExtension(Project project, Task task) {
+        TemplateSettingExtension extension = project.getExtensions().findByName(TemplateSettingExtension.TAG)
+        task.setFileFormat(".java")
+        SystemOutPrint.println("compile SDK = " + extension.compileSdk)
+        String interfacePath = extension.interfaceSourceDir
+        SystemOutPrint.println("interfaceSourceDir 122  = " + interfacePath)
+        String rootPath = project.getProjectDir().getAbsolutePath()
+        String path = rootPath + interfacePath
+        task.setFileSourceDir(new File(interfacePath))
     }
 
 

@@ -9,7 +9,7 @@ dependencies {
     //groovy sdk
     implementation localGroovy()
 
-    //implementation 'com.android.tools.build:gradle:2.3.3'
+    implementation 'com.android.tools.build:gradle:4.2.1'
 }
 
 repositories {

@@ -1,4 +1,3 @@
-import com.wj.global.gradle.GlobalGradleConfig
 
 plugins {
     id 'com.android.application'
@@ -64,14 +63,14 @@ task(thirdTask) {
 //    println(prefix + "thirdTask by () ")
 }
 
-task taskActionTask(type: GlobalGradleConfig) {
-    doLast {
-        println(prefix + " GlobalGradleConfig do last")
-    }
+//task taskActionTask(type: GlobalGradleConfig) {
+//    doLast {
+//        println(prefix + " GlobalGradleConfig do last")
+//    }
 //    doFirst {
 //        println(prefix + " GlobalGradleTask do first")
 //    }
-}
+//}
 //可以设置taskActionTask是否执行
 //taskActionTask.enabled true
 
@@ -81,17 +80,17 @@ task taskActionTask(type: GlobalGradleConfig) {
 //    getTasks().matching {
 //        it.name.equals("preBuild")
 //    }.each {
-//        it.dependsOn(firstTask, secondTask, thirdTask, taskActionTask)
+//        it.dependsOn(firstTask, secondTask, thirdTask)
 //    }
 //}
 //方法二：直接从tasks的找到preBuild这个task即可
-tasks.preBuild.dependsOn(firstTask, secondTask, thirdTask, taskActionTask)
+tasks.preBuild.dependsOn(firstTask, secondTask, thirdTask)
 
 //自定义插件中的输入属性的设置
-//templateSettingExtension {
-//    compileSdk = "1.0.0"
-//    interfaceSourceDir = fileTree("src/main/mvp")
-//}
+templateSettingExtension {
+    compileSdk = "1.0.0"
+    interfaceSourceDir = file("src/main/java/mvp/test.java")
+}
 
 configurations {
     firstConfiguration {
