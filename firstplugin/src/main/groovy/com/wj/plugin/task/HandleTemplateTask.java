@@ -9,6 +9,7 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.InputFiles;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
@@ -45,6 +46,7 @@ public class HandleTemplateTask extends DefaultTask {
     }
 
     @InputDirectory
+    //@Optional 可添加表示参数可选
     public File getFileSourceDir() {
         return fileSourceDir;
     }
@@ -56,6 +58,5 @@ public class HandleTemplateTask extends DefaultTask {
     @TaskAction
     public void run() {
         SystemOutPrint.println(" HandleTemplateTask is running ");
-       // getExtensions().findByName("")
     }
 }

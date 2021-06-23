@@ -43,14 +43,6 @@ def prefix = "%%%%%%%%% FirstPluginProject %%%%%%%%%  "
  * 然后在root project在引入该插件
  * */
 //tasks.compileJava.dependsOn(handleTemplateTask)
-this.beforeEvaluate {
-    println(prefix + " in build.gradle beforeEvaluate")
-}
-
-this.afterEvaluate {
-    println(prefix + " in build.gradle afterEvaluate")
-}
-
 
 /**将项目打包给到其他module使用*/
 
@@ -103,7 +95,7 @@ uploadArchives {
             // }
 
             //本地maven
-            repository(url: uri('../plugin'))
+            repository(url: uri('../plugins'))
         }
     }
 }

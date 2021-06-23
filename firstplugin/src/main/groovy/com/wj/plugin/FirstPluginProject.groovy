@@ -5,7 +5,6 @@ import com.wj.plugin.task.HandleTemplateTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
-import org.gradle.api.file.FileCollection
 
 /**
  *
@@ -45,7 +44,6 @@ class FirstPluginProject implements Plugin<Project> {
     void addHandleTemplateTask(Project project) {
         Task task = project.getTasks().create("handleTemplateTask", HandleTemplateTask)
 
-        setHandleTemplateTaskInputFromExtension(project)
         //这里是返回的app的这个module，然后在app的project的所有tasks中添加该handleTemplateTask
         project.afterEvaluate {
             project.getTasks().matching {
@@ -53,6 +51,7 @@ class FirstPluginProject implements Plugin<Project> {
                 it.name.equals("preBuild")
             }.each {
                 it.dependsOn(task)
+                setHandleTemplateTaskInputFromExtension(project, task)
 
             }
         }
@@ -62,11 +61,12 @@ class FirstPluginProject implements Plugin<Project> {
      * @param project
      * @param task
      */
-    void setHandleTemplateTaskInputFromExtension(Project project, Task task) {
+    void setHandleTemplateTaskInputFromExtension(Project project, HandleTemplateTask task) {
+        //项目配置完成之后，就可以获得设置的Extension中的内容
         TemplateSettingExtension extension = project.getExtensions().findByName(TemplateSettingExtension.TAG)
         task.setFileFormat(".java")
-        SystemOutPrint.println(" input interface source dir = " + extension.interfaceSourceDir)
-        task.setFileSourceDir(FileCollection(extension.interfaceSourceDir))
+        String path = project.getProjectDir().getAbsolutePath() + "/src/main/java/mvp"
+        task.setFileSourceDir(extension.interfaceSourceDir)
     }
 
 }

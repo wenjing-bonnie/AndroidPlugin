@@ -1,17 +1,12 @@
 package com.wj.plugin.extension;
 
-import com.wj.plugin.SystemOutPrint;
-
-import org.gradle.api.file.FileCollection;
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFile;
-
 import java.io.File;
+import java.util.Map;
 
 /**
  * Created by wenjing.liu on 2021/6/21 in J1.
  * <p>
- * 用来配置项目的一些配置项
+ * 用来配置项目的一些配置项:必须有对应的setter和getter方法，否则会提示read-only
  *
  * @author wenjing.liu
  */
@@ -25,8 +20,15 @@ public class TemplateSettingExtension {
         return compileSdk;
     }
 
+    public void setCompileSdk(String compileSdk) {
+        this.compileSdk = compileSdk;
+    }
+
     public File getInterfaceSourceDir() {
         return interfaceSourceDir;
     }
 
+    public void setInterfaceSourceDir(File interfaceSourceDir) {
+        this.interfaceSourceDir = interfaceSourceDir;
+    }
 }
