@@ -26,34 +26,34 @@ import java.io.File;
  * @author wenjing.liu
  */
 public class HandleTemplateTask extends DefaultTask {
-    /**
-     * 文件格式
-     */
-    private String fileFormat;
-    /**
-     * 文件的路径
-     */
-    private File fileSourceDir;
+        /**
+         * 文件格式
+         */
+        private String fileFormat;
+        /**
+         * 文件的路径
+         */
+        private File fileSourceDir;
 
 
-    @Input
-    public String getFileFormat() {
-        return fileFormat;
-    }
+        @Input
+        public String getFileFormat() {
+            return fileFormat;
+        }
 
-    public void setFileFormat(String fileFormat) {
-        this.fileFormat = fileFormat;
-    }
+        public void setFileFormat(String fileFormat) {
+            this.fileFormat = fileFormat;
+        }
 
-    @InputDirectory
-    //@Optional 可添加表示参数可选
-    public File getFileSourceDir() {
-        return fileSourceDir;
-    }
+        @InputDirectory
+        //@Optional 可添加表示参数可选
+        public File getFileSourceDir() {
+            return fileSourceDir;
+        }
 
-    public void setFileSourceDir(File fileSourceDir) {
-        this.fileSourceDir = fileSourceDir;
-    }
+        public void setFileSourceDir(File fileSourceDir) {
+            this.fileSourceDir = fileSourceDir;
+        }
 
     @TaskAction
     public void run() {
