@@ -58,5 +58,7 @@ public class HandleTemplateTask extends DefaultTask {
     @TaskAction
     public void run() {
         SystemOutPrint.println(" HandleTemplateTask is running ");
+        SystemOutPrint.println(" Set the file format is \" " + getFileFormat());
+        SystemOutPrint.println(" Set the file source dir is \" " + getFileSourceDir());
     }
 }
