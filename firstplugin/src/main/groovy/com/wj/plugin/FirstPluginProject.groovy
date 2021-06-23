@@ -56,17 +56,16 @@ class FirstPluginProject implements Plugin<Project> {
             }
         }
     }
-
+    /**
+     * 设置HandleTemplateTask的input
+     * @param project
+     * @param task
+     */
     void setHandleTemplateTaskInputFromExtension(Project project, Task task) {
         TemplateSettingExtension extension = project.getExtensions().findByName(TemplateSettingExtension.TAG)
         task.setFileFormat(".java")
-        SystemOutPrint.println("compile SDK = " + extension.compileSdk)
-        String interfacePath = extension.interfaceSourceDir
-        SystemOutPrint.println("interfaceSourceDir 122  = " + interfacePath)
-        String rootPath = project.getProjectDir().getAbsolutePath()
-        String path = rootPath + interfacePath
-        task.setFileSourceDir(new File(interfacePath))
+        SystemOutPrint.println(" input interface file = " + extension.interfaceSourceDir)
+        task.setFileSourceDir(new File(extension.interfaceSourceDir))
     }
-
 
 }
