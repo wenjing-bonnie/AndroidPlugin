@@ -6,7 +6,9 @@ import org.apache.tools.ant.Task;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
+import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
@@ -42,7 +44,7 @@ public class HandleTemplateTask extends DefaultTask {
         this.fileFormat = fileFormat;
     }
 
-    @InputFile
+    @InputDirectory
     public File getFileSourceDir() {
         return fileSourceDir;
     }

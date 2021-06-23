@@ -5,6 +5,7 @@ import com.wj.plugin.task.HandleTemplateTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.file.FileCollection
 
 /**
  *
@@ -64,8 +65,8 @@ class FirstPluginProject implements Plugin<Project> {
     void setHandleTemplateTaskInputFromExtension(Project project, Task task) {
         TemplateSettingExtension extension = project.getExtensions().findByName(TemplateSettingExtension.TAG)
         task.setFileFormat(".java")
-        SystemOutPrint.println(" input interface file = " + extension.interfaceSourceDir)
-        task.setFileSourceDir(new File(extension.interfaceSourceDir))
+        SystemOutPrint.println(" input interface source dir = " + extension.interfaceSourceDir)
+        task.setFileSourceDir(FileCollection(extension.interfaceSourceDir))
     }
 
 }

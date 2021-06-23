@@ -2,6 +2,7 @@ package com.wj.plugin.extension;
 
 import com.wj.plugin.SystemOutPrint;
 
+import org.gradle.api.file.FileCollection;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 
@@ -23,21 +24,6 @@ public class TemplateSettingExtension {
     public String getCompileSdk() {
         return compileSdk;
     }
-
-    /**
-     * 必须有setter方法,否则在build.gradle配置该项的时候会识别不到
-     */
-
-//    public void setCompileSdk(String sdk) {
-//        this.compileSdk = sdk;
-//        SystemOutPrint.println(" compileSdk = " + compileSdk);
-//    }
-
-
-//    public void setInterfaceSourceDir(File interfaceSourceDir) {
-//        this.interfaceSourceDir = interfaceSourceDir;
-//        SystemOutPrint.println(" interfaceSourceDir = " + interfaceSourceDir);
-//    }
 
     public File getInterfaceSourceDir() {
         return interfaceSourceDir;

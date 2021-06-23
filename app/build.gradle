@@ -89,7 +89,7 @@ tasks.preBuild.dependsOn(firstTask, secondTask, thirdTask)
 //自定义插件中的输入属性的设置
 templateSettingExtension {
     compileSdk = "1.0.0"
-    interfaceSourceDir = file("src/main/java/mvp/test.java")
+    interfaceSourceDir = file("src/main/java/mvp")
 }
 
 configurations {
