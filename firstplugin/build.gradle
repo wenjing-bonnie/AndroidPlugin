@@ -1,7 +1,6 @@
 import com.wj.plugin.task.HandleTemplateTaskInProject
 import com.wj.plugin.extension.TemplateSettingExtensionInProject
 import com.wj.plugin.SystemOutPrint
-import org.gradle.api.Plugin
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
@@ -55,7 +54,6 @@ this.afterEvaluate {
     String path = "/Users/j1/Documents/android/code/AndroidPlugin/firstplugin/src/main/groovy/com/wj/plugin/extension"
     TemplateSettingExtensionInProject extension = getTemplateSettingExtensionInProject()
     if (extension != null) {
-        SystemOutPrint.println(extension.interfaceSourceDir)
         handleTemplateTaskInProject.setFileSourceDir(extension.interfaceSourceDir)
     }
     handleTemplateTaskInProject.setFileFormat(".java")

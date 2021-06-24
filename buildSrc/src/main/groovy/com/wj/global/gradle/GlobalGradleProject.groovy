@@ -13,9 +13,7 @@ class GlobalGradleProject implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        SystemOutPrint.print(" ~~~~~~~~~~~~~~ ")
-        SystemOutPrint.print(" Global Gradle Project ")
-        SystemOutPrint.print(" ~~~~~~~~~~~~~~ ")
+        SystemOutPrint.print("Apply the Global Gradle Project ")
 
         //addHandleTemplateTask(project)
     }

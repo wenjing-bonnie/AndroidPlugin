@@ -23,9 +23,7 @@ class FirstPluginProject implements Plugin<Project> {
 
     @Override
     void apply(Project project) {
-        SystemOutPrint.println("================")
-        SystemOutPrint.println("First Plugin")
-        SystemOutPrint.println("================")
+        SystemOutPrint.println("Apply the First Plugin Project")
         /**（1）添加 TemplateSettingExtension
          * 因为添加到被依赖module的project中，所以该属性扩展只能在被依赖module中引用
          * */
@@ -35,7 +33,8 @@ class FirstPluginProject implements Plugin<Project> {
         /**为添加到build.gradle来增加扩展属性*/
         createExtensionsForInProject(project)
     }
-    void createExtensionsForInProject(project){
+
+    void createExtensionsForInProject(project) {
         project.getExtensions().create(TemplateSettingExtensionInProject.TAG, TemplateSettingExtensionInProject)
     }
 
