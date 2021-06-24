@@ -1,8 +1,11 @@
-//import com.wj.plugin.task.HandleTemplateTask
+import com.wj.plugin.task.HandleTemplateTaskInProject
+import com.wj.plugin.extension.TemplateSettingExtensionInProject
+import com.wj.plugin.SystemOutPrint
+import org.gradle.api.Plugin
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
-/**项目依赖*/
+/** 第一部分：项目依赖 */
 dependencies {
     //gradle sdk
     implementation gradleApi()
@@ -14,27 +17,31 @@ dependencies {
 
 repositories {
     mavenCentral()
-    //maven{ url'http://maven.aliyun.com/nexus/content/repositories/jcenter'}
 }
 
-/**项目自定义实现具体功能的Task*/
-def prefix = "%%%%%%%%% FirstPluginProject %%%%%%%%%  "
+/**第二部分：项目自定义实现具体功能的Task*/
 
-/**若增加HandleTemplateTask出现编译不通过的时候，需要删除plugins/里面的内容之后，重新编译该项目然后uploadArchives
- * 最后在将该依赖添加到root project中
- * TODO 通过这种方式添加的taskaction不执行*/
-//task handleTemplateTask(type: HandleTemplateTask) {
-//    //必须设置input，否则会抛出"No value has been specified for property"
-//    setFileSourceDir(file("src/main/java/test.java"))
-//    setFileFormat(".java")
-//    doLast {
-//        println prefix + " The HandleTemplateTask is finished !!! "
-//        println prefix + getFileFormat()
-//    }
-//    doFirst {
-//        println prefix + " The HandleTemplateTask do first !!! "
-//    }
+/**（1）添加 TemplateSettingExtension
+ * 如果这里单纯的通过getExtensions().create来进行属性扩展，那么只能在该build.gradle中使用
+ * 解决方案：
+ * 方案一：如何找到哪个module apply了该插件:通过循环找到使用了该插件的module见createTemplateSettingExtensionInProjectForAllProject()来获取该扩展属性
+ * 但是这种方案的缺陷在于：
+ * 在该build.gradle才为被依赖module增加属性扩展,而被依赖module已经afterEvaluate。
+ * 或者换种说法：在构建被依赖module的build.gradle的时候,会找不到该属性扩展，抛出 Could not find method templateSettingExtensionInProject() for arguments
+ * 被依赖module先afterEvaluate，而在该build.gradle才增加
+ * 解决方案：
+ * 目前看下来只能在FirstPluginProject中增加属性扩展,但是可通过getTemplateSettingExtensionInProject()
+ * 方案二：将root project下所有的project都添加该属性扩展
+ * 缺陷同方案一
+ * */
+//apply {
+//    createTemplateSettingExtensionInProjectForAllProject()
 //}
+
+/**（2）将功能的Task添加到app这个project的任务队列中*/
+//若增加HandleTemplateTaskInProject出现编译不通过的时候,需要删除plugins/里面的内容之后,重新编译该项目然后uploadArchives,最后在将该依赖添加到root project中
+task handleTemplateTaskInProject(type: HandleTemplateTaskInProject) {
+}
 
 
 /**将自定义的的Task添加到依赖关系图中，必须保证该Task的input和output已经设置并且还设置类型一致，
@@ -42,9 +49,51 @@ def prefix = "%%%%%%%%% FirstPluginProject %%%%%%%%%  "
  * 遇到这种情况就是将root project中的com.wj.firstplugin的依赖去掉之后，重新编译项目，成功之后重新打包上传，
  * 然后在root project在引入该插件
  * */
-//tasks.compileJava.dependsOn(handleTemplateTask)
+this.afterEvaluate {
 
-/**将项目打包给到其他module使用*/
+    //必须设置input，否则会抛出"No value has been specified for property"
+    String path = "/Users/j1/Documents/android/code/AndroidPlugin/firstplugin/src/main/groovy/com/wj/plugin/extension"
+    TemplateSettingExtensionInProject extension = getTemplateSettingExtensionInProject()
+    if (extension != null) {
+        SystemOutPrint.println(extension.interfaceSourceDir)
+        handleTemplateTaskInProject.setFileSourceDir(extension.interfaceSourceDir)
+    }
+    handleTemplateTaskInProject.setFileFormat(".java")
+    tasks.compileJava.dependsOn(handleTemplateTaskInProject)
+}
+/**
+ * 通过循环找到使用了该插件的module
+ */
+void createTemplateSettingExtensionInProjectForAllProject() {
+    Set<Project> allProjectsInRoot = getRootProject().getAllprojects()
+    for (Project project : allProjectsInRoot) {
+        List<Plugin> plugins = project.getPlugins().toList()
+        for (Plugin plugin : plugins) {
+            //找到含有该插件的被依赖的project,添加该属性扩展
+            if (project.getPlugins().findPlugin(com.wj.plugin.FirstPluginProject)) {
+                project.getExtensions().create(TemplateSettingExtensionInProject.TAG, TemplateSettingExtensionInProject)
+                return
+            }
+        }
+    }
+}
+/**
+ * 找到设置了属性扩展的module中的属性扩展
+ * @return
+ */
+TemplateSettingExtensionInProject getTemplateSettingExtensionInProject() {
+    Set<Project> allProjectsInRoot = getRootProject().getAllprojects()
+    for (Project project : allProjectsInRoot) {
+        TemplateSettingExtensionInProject extension = project.getExtensions().findByName(TemplateSettingExtensionInProject.TAG)
+        if (extension != null) {
+            return extension
+        }
+    }
+    return null
+}
+
+
+/**第三部分：下面是将项目打包给到其他module使用*/
 
 /**(方法一)：打包成Jar包的方式 */
 def marvenjar = 'mavenjar'
@@ -61,7 +110,7 @@ task makeJar(type: org.gradle.jvm.tasks.Jar) {
     //扩展名，默认的为jar
     //archiveExtension = "extension"
     doLast {
-        println prefix + " The task of make jar is finished !!!"
+        SystemOutPrint.println(" The task of make jar is finished !!!")
     }
 }
 

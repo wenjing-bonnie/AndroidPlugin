@@ -91,7 +91,14 @@ templateSettingExtension {
     compileSdk = "1.0.0"
     interfaceSourceDir = file("src/main/java/mvp")
 }
+templateSettingExtensionInProject {
+    compileSdk = "1.0.0"
+    interfaceSourceDir = file("src/main/java/mvp")
+}
 
+this.afterEvaluate {
+    println(prefix + "afterEvaluate")
+}
 configurations {
     firstConfiguration {
         description("This is the first configuration")

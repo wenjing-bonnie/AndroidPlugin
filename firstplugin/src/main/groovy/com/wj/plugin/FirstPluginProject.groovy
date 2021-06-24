@@ -1,6 +1,7 @@
 package com.wj.plugin
 
 import com.wj.plugin.extension.TemplateSettingExtension
+import com.wj.plugin.extension.TemplateSettingExtensionInProject
 import com.wj.plugin.task.HandleTemplateTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -13,7 +14,8 @@ import org.gradle.api.Task
  * 1）在Configure project :app 会首先执行该文件里面的内容，直到把plugins{}里面的插件的Plugin<Project>都执行完毕
  * 2）然后在Configure project :firstplugin 每一个插件的build.gradle，当该插件的build.gradle配置结束回调自身的afterEvaluate{},最后回调到整个项目工程的settings.gradle
  *
- * 所以在apply(Project project) 中的project返回的是app
+ * 所以在apply(Project project) 中的project返回的是app(通过apply或plugins{}添加该插件的工程),
+ * 所以通过下面的方式添加的属性扩展和自定义Task都是添加到app这个module上面
  * @author wenjing.liu
  */
 
@@ -24,11 +26,19 @@ class FirstPluginProject implements Plugin<Project> {
         SystemOutPrint.println("================")
         SystemOutPrint.println("First Plugin")
         SystemOutPrint.println("================")
-        /**（1）添加 TemplateSettingExtension*/
+        /**（1）添加 TemplateSettingExtension
+         * 因为添加到被依赖module的project中，所以该属性扩展只能在被依赖module中引用
+         * */
         createExtensions(project)
         /**（2）将功能的Task添加到app这个project的任务队列中*/
         addHandleTemplateTask(project)
+        /**为添加到build.gradle来增加扩展属性*/
+        createExtensionsForInProject(project)
     }
+    void createExtensionsForInProject(project){
+        project.getExtensions().create(TemplateSettingExtensionInProject.TAG, TemplateSettingExtensionInProject)
+    }
+
     /**
      * 创建Extension
      * @param project

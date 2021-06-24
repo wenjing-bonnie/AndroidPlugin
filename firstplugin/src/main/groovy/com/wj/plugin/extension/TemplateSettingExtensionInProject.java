@@ -1,18 +1,17 @@
 package com.wj.plugin.extension;
 
 import java.io.File;
-import java.util.Map;
 
 /**
- * Created by wenjing.liu on 2021/6/21 in J1.
+ * Created by wenjing.liu on 2021/6/24 in J1.
  * <p>
- * 用来配置项目的一些配置项:必须有对应的setter和getter方法，否则会提示read-only
- * 该类是对被依赖的module进行属性扩展
+ * 该类用来对本插件自身进行属性扩展，将该扩展添加到本插件的project中
  *
  * @author wenjing.liu
  */
-public class TemplateSettingExtension {
-    public static final String TAG = "templateSettingExtension";
+public class TemplateSettingExtensionInProject {
+
+    public static final String TAG = "templateSettingExtensionInProject";
 
     private String compileSdk;
     private File interfaceSourceDir;
