@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-  <info organisation="AndroidPlugin" module="firstplugin" revision="unspecified" status="integration" publication="20210624133537"/>
+  <info organisation="AndroidPlugin" module="firstplugin" revision="unspecified" status="integration" publication="20210624145348"/>
   <configurations>
     <conf name="annotationProcessor" visibility="private"/>
     <conf name="apiElements" visibility="private" extends="runtime"/>
