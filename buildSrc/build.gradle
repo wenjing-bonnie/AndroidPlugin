@@ -17,9 +17,9 @@ dependencies {
 repositories {
     mavenCentral()
 }
-//TODO 这种方式不能引用这个自定义的TemplateTask，暂时不知道什么原因
+//TODO 这种方式不能引用这个自定义的TemplateTask，import的时候都不能导入包，暂时不知道什么原因
 //TODO add on  2021-06-17 by wenjing.liu
-//task templateTaskInBuild(type: TemplateTask) {
+//task templateTaskInBuild(type: com.wj.global.gradle.TemplateTask) {
 //    doFirst {
 //        println(prefix + " template do first ========")
 //    }
@@ -33,7 +33,7 @@ task syncTask(type: Sync) {
         exclude 'src/main/synctest/syncexist.txt'
     }
     doLast {
-        println(prefix + "syncTask do last")
+        println(prefix + " syncTask do last")
     }
 }
 
@@ -50,22 +50,7 @@ task copyTask(type: Copy) {
     }
 }
 
-//assemble.dependsOn copyTask
-//copyTask.dependsOn assemble
-
-
-
-//assemble.dependsOn syncTask
-
 this.afterEvaluate {
-    //Task templateTask = getByName("TemplateTask")
-    tasks.matching {
-        Task task ->
-            task.name.equals("compileJava")
-    }.each {
-        Task task ->
-            println(prefix + " in afterEvaluate find \"" + task.name + " \"")
-            task.dependsOn(syncTask,copyTask)
-    }
+    tasks.compileJava.dependsOn(syncTask,copyTask)
 }
 

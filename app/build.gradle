@@ -63,18 +63,9 @@ task(thirdTask) {
 //    println(prefix + "thirdTask by () ")
 }
 
-//task taskActionTask(type: GlobalGradleConfig) {
-//    doLast {
-//        println(prefix + " GlobalGradleConfig do last")
-//    }
-//    doFirst {
-//        println(prefix + " GlobalGradleTask do first")
-//    }
-//}
-//可以设置taskActionTask是否执行
-//taskActionTask.enabled true
+//可以设置thirdTask是否执行
+//thirdTask.enabled true
 
-//assemble.dependsOn(taskActionTask)
 //方法一：在该project配置完成之后，在preBuild之前添加这些自定义的Task
 //this.afterEvaluate {
 //    getTasks().matching {

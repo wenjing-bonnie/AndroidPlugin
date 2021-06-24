@@ -5,6 +5,7 @@ import com.wj.global.log.SystemOutPrint;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.File;
@@ -29,21 +30,15 @@ public class TemplateTask extends DefaultTask {
     //private TemplateEngine
 
     @Input
+    @Optional
     public String getCompileSdk() {
-        SystemOutPrint.print(" compileSdk = " + compileSdk);
         return compileSdk;
     }
 
     @InputFile
+    @Optional
     public File getInputFile() {
-        SystemOutPrint.print(" inputFile = " + inputFile.getPath());
         return inputFile;
-    }
-
-
-    @InputFile
-    public void taskInput(File file) {
-        this.getInputs().file(file);
     }
 
     @TaskAction
