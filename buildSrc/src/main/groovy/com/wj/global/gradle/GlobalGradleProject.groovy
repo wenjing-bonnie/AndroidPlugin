@@ -20,15 +20,10 @@ class GlobalGradleProject implements Plugin<Project> {
         TemplateTask templateTask = project.getTasks().create("templateTask", TemplateTask)
 
         project.afterEvaluate {
-            project.getTasks().matching {
-                SystemOutPrint.print(" it name = " + it.name)
-                it.name.equals("preBuild")
-            }.each {
-                //SystemOutPrint.print(" it name = " + templateTask)
-                SystemOutPrint.print(" each it name = " + it.name)
-                it.dependsOn(templateTask)
-            }
+            it.name.equals("preBuild")
+        }.each {
+            it.dependsOn(templateTask)
         }
-
     }
+
 }
