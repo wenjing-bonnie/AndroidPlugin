@@ -96,8 +96,12 @@ androidExtension {
 
     buildTypes {
         dev {
-            signingConfig = false
+            //A problem occurred evaluating project ':app'.
+            //> No signature of method: build_dwrb2icq269nomqcc24dytwa1.androidExtension() is applicable for argument types: (build_dwrb2icq269nomqcc24dytwa1$_run_closure7) values: [build_dwrb2icq269nomqcc24dytwa1$_run_closure7@4ddf3c7]
+            //signingConfig  false
+            signingConfig = true
         }
+
     }
 }
 

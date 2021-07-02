@@ -98,6 +98,9 @@ public class AndroidExtension {
         }
     }
 
+    /**
+     * 必须为static类，否则会抛出"Class AndroidExtension.BuildTypes is a non-static inner class."
+     */
     static class BuildTypes {
         private boolean signingConfig;
         //必须含有name属性，否则会抛出"'com.wj.plugin.extension.AndroidExtension$BuildTypes@130b3f7d' because it does not have a 'name' property"
