@@ -85,6 +85,7 @@ templateSettingExtensionInProject {
     compileSdk = "1.0.0"
     interfaceSourceDir = file("src/main/java/mvp")
 }
+//多层闭包的属性扩展
 androidExtension {
     compileSdkVersion = "1.0.0"
     buildToolsVersion = "29.0.0"
