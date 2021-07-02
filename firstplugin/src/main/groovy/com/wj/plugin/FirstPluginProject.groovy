@@ -1,5 +1,6 @@
 package com.wj.plugin
 
+import com.wj.plugin.extension.AndroidExtension
 import com.wj.plugin.extension.TemplateSettingExtension
 import com.wj.plugin.extension.TemplateSettingExtensionInProject
 import com.wj.plugin.task.HandleTemplateTask
@@ -32,10 +33,19 @@ class FirstPluginProject implements Plugin<Project> {
         addHandleTemplateTask(project)
         /**为添加到build.gradle来增加扩展属性*/
         createExtensionsForInProject(project)
+        //测试两层闭包
+        createAndroidExtensions(project)
+        testAndroidExtension(project)
     }
 
     void createExtensionsForInProject(project) {
         project.getExtensions().create(TemplateSettingExtensionInProject.TAG, TemplateSettingExtensionInProject)
+    }
+
+
+    void createAndroidExtensions(Project project) {
+        project.getExtensions().create(AndroidExtension.TAG, AndroidExtension)
+
     }
 
     /**
@@ -61,7 +71,6 @@ class FirstPluginProject implements Plugin<Project> {
             }.each {
                 it.dependsOn(task)
                 setHandleTemplateTaskInputFromExtension(project, task)
-
             }
         }
     }
@@ -76,6 +85,15 @@ class FirstPluginProject implements Plugin<Project> {
         task.setFileFormat(".java")
         String path = project.getProjectDir().getAbsolutePath() + "/src/main/java/mvp"
         task.setFileSourceDir(extension.interfaceSourceDir)
+    }
+
+    void testAndroidExtension(Project project) {
+        project.afterEvaluate {
+            AndroidExtension extension = project.getExtensions().findByName(AndroidExtension.TAG)
+            SystemOutPrint.println("compileSdkVersion = " + extension.compileSdkVersion)
+            SystemOutPrint.println("applicationId = " + extension.defaultConfig.getApplicationId())
+            SystemOutPrint.println("minSdkVersion = " + extension.defaultConfig.minSdkVersion)
+        }
     }
 
 }

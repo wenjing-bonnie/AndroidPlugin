@@ -26,4 +26,5 @@ class GlobalGradleProject implements Plugin<Project> {
         }
     }
 
+
 }

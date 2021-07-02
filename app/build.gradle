@@ -1,4 +1,3 @@
-
 plugins {
     id 'com.android.application'
     id 'com.wj.firstplugin'
@@ -85,6 +84,15 @@ templateSettingExtension {
 templateSettingExtensionInProject {
     compileSdk = "1.0.0"
     interfaceSourceDir = file("src/main/java/mvp")
+}
+androidExtension {
+    compileSdkVersion = "1.0.0"
+    buildToolsVersion = "29.0.0"
+
+    defaultConfig {
+        applicationId = "1.0.0"
+        minSdkVersion = "3.0.0"
+    }
 }
 
 this.afterEvaluate {
