@@ -1,7 +1,12 @@
 package com.wj.plugin.extension;
 
 
+import com.wj.plugin.SystemOutPrint;
+
 import org.gradle.api.Action;
+import org.gradle.api.NamedDomainObjectCollection;
+import org.gradle.api.NamedDomainObjectContainer;
+import org.gradle.api.Project;
 import org.gradle.util.ConfigureUtil;
 
 import groovy.lang.Closure;
@@ -18,6 +23,11 @@ public class AndroidExtension {
     private String compileSdkVersion;
     private String buildToolsVersion;
     private DefaultConfig defaultConfig = new DefaultConfig();
+    private NamedDomainObjectContainer<BuildTypes> buildTypes;
+
+    public AndroidExtension(Project project) {
+        buildTypes = project.container(BuildTypes.class);
+    }
 
     public void setCompileSdkVersion(String version) {
         this.compileSdkVersion = version;
@@ -41,23 +51,30 @@ public class AndroidExtension {
      *               it.applicationId = "1.0.0"
      *               }
      */
-//    public void setDefaultConfig(Action<DefaultConfig> action) {
-//        action.execute(defaultConfig);
-//    }
-
-    /**
-     * @param config 在build.gradle文件
-     *               defaultConfig {
-     *               applicationId = "1.0.0"
-     *               minSdkVersion = "3.0.0"
-     *               }
-     */
-    public void setDefaultConfig(Closure config) {
-        ConfigureUtil.configure(config, defaultConfig);
+    public void defaultConfig(Action<DefaultConfig> action) {
+        action.execute(defaultConfig);
     }
 
+    //    /**
+//     * @param config 在build.gradle文件
+//     *               defaultConfig {
+//     *               applicationId = "1.0.0"
+//     *               minSdkVersion = "3.0.0"
+//     *               }
+//     */
+//    public void setDefaultConfig(Closure config) {
+//        ConfigureUtil.configure(config, defaultConfig);
+//    }
     public DefaultConfig getDefaultConfig() {
         return defaultConfig;
+    }
+
+    public void buildTypes(Action<NamedDomainObjectContainer<BuildTypes>> action) {
+        action.execute(buildTypes);
+    }
+
+    public NamedDomainObjectContainer<BuildTypes> getBuildTypes() {
+        return buildTypes;
     }
 
     class DefaultConfig {
@@ -78,6 +95,28 @@ public class AndroidExtension {
 
         public String getMinSdkVersion() {
             return this.minSdkVersion;
+        }
+    }
+
+    static class BuildTypes {
+        private boolean signingConfig;
+        //必须含有name属性，否则会抛出"'com.wj.plugin.extension.AndroidExtension$BuildTypes@130b3f7d' because it does not have a 'name' property"
+        private String name;
+
+        BuildTypes(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setSigningConfig(boolean config) {
+            this.signingConfig = config;
+        }
+
+        public boolean getSigningConfig() {
+            return this.signingConfig;
         }
     }
 }

@@ -91,7 +91,13 @@ androidExtension {
 
     defaultConfig {
         applicationId = "1.0.0"
-        minSdkVersion = "3.0.0"
+        //minSdkVersion = "3.0.0"
+    }
+
+    buildTypes {
+        dev {
+            signingConfig = false
+        }
     }
 }
 

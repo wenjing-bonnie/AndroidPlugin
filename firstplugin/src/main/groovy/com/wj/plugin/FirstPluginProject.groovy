@@ -44,8 +44,7 @@ class FirstPluginProject implements Plugin<Project> {
 
 
     void createAndroidExtensions(Project project) {
-        project.getExtensions().create(AndroidExtension.TAG, AndroidExtension)
-
+        project.getExtensions().create(AndroidExtension.TAG, AndroidExtension, project)
     }
 
     /**
@@ -93,6 +92,10 @@ class FirstPluginProject implements Plugin<Project> {
             SystemOutPrint.println("compileSdkVersion = " + extension.compileSdkVersion)
             SystemOutPrint.println("applicationId = " + extension.defaultConfig.getApplicationId())
             SystemOutPrint.println("minSdkVersion = " + extension.defaultConfig.minSdkVersion)
+            extension.buildTypes.each {
+                SystemOutPrint.println("buildTypes = " + it.name + " , signingConfig = " + it.signingConfig)
+
+            }
         }
     }
 
