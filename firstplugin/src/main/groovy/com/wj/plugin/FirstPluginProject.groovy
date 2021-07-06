@@ -1,9 +1,11 @@
 package com.wj.plugin
 
+import com.android.build.gradle.AppExtension
 import com.wj.plugin.extension.AndroidExtension
 import com.wj.plugin.extension.TemplateSettingExtension
 import com.wj.plugin.extension.TemplateSettingExtensionInProject
 import com.wj.plugin.task.HandleTemplateTask
+import com.wj.plugin.transform.HotTransform
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
@@ -35,7 +37,11 @@ class FirstPluginProject implements Plugin<Project> {
         createExtensionsForInProject(project)
         //测试两层闭包
         createAndroidExtensions(project)
-        testAndroidExtension(project)
+        //隐藏测试输出
+        // testAndroidExtension(project)
+
+        /**添加Transform*/
+        project.extensions.findByType(AppExtension.class).registerTransform(new HotTransform())
     }
 
     void createExtensionsForInProject(project) {
@@ -51,7 +57,7 @@ class FirstPluginProject implements Plugin<Project> {
      * 创建Extension
      * @param project
      */
-    void createExtensions(Project project) {
+    TemplateSettingExtension createExtensions(Project project) {
         //在这里是无法取到  extension的值，因为此时还没有构建到app中的build.gradle
         project.getExtensions().create(TemplateSettingExtension.TAG, TemplateSettingExtension)
     }
