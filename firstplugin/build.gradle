@@ -11,7 +11,7 @@ dependencies {
     //groovy sdk
     implementation localGroovy()
 
-    //implementation 'com.android.tools.build:gradle:4.2.1'
+    implementation 'com.android.tools.build:gradle:4.2.1'
 }
 
 repositories {
@@ -33,9 +33,6 @@ repositories {
  * 方案二：将root project下所有的project都添加该属性扩展
  * 缺陷同方案一
  * */
-//apply {
-//    createTemplateSettingExtensionInProjectForAllProject()
-//}
 
 /**（2）将功能的Task添加到app这个project的任务队列中*/
 //若增加HandleTemplateTaskInProject出现编译不通过的时候,需要删除plugins/里面的内容之后,重新编译该项目然后uploadArchives,最后在将该依赖添加到root project中

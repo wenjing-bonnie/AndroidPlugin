@@ -1,15 +1,9 @@
 package com.wj.plugin.extension;
 
 
-import com.wj.plugin.SystemOutPrint;
-
 import org.gradle.api.Action;
-import org.gradle.api.NamedDomainObjectCollection;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.Project;
-import org.gradle.util.ConfigureUtil;
-
-import groovy.lang.Closure;
 
 /**
  * Created by wenjing.liu on 2021/6/25 in J1.
