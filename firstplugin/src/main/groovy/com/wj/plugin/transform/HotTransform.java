@@ -9,11 +9,12 @@ import com.android.build.api.transform.TransformInput;
 import com.android.build.api.transform.TransformInvocation;
 import com.android.build.api.transform.TransformOutputProvider;
 import com.android.build.gradle.internal.pipeline.TransformManager;
+import com.google.common.collect.ImmutableSet;
 import com.wj.plugin.SystemOutPrint;
+
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -29,7 +30,7 @@ public class HotTransform extends Transform {
 
     @Override
     public String getName() {
-        return "Hot transform task";
+        return "HotTransformTask";
     }
 
     /**
@@ -46,16 +47,17 @@ public class HotTransform extends Transform {
 
     /**
      * 需要操作的内容范围
-     * PROJECT:只有项目目录
-     * SUB_PROJECT:只有子项目目录
-     * EXTERNAL_LIBRARIES:只有外部库
-     * TESTED_CODE:当前变量（包括依赖项)测试的代码
-     * PROVIDED_ONLY:本地或者员村依赖项
      *
      * @return
      */
     @Override
     public Set<? super QualifiedContent.Scope> getScopes() {
+        //return TransformManager.EMPTY_SCOPES;
+        return TransformManager.SCOPE_FULL_PROJECT;
+    }
+
+    @Override
+    public Set<? super QualifiedContent.Scope> getReferencedScopes() {
         return TransformManager.SCOPE_FULL_PROJECT;
     }
 
@@ -79,7 +81,8 @@ public class HotTransform extends Transform {
      */
     @Override
     public void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
-        // super.transform(transformInvocation);
+       //如果不带super，就不会生成dex文件
+        super.transform(transformInvocation);
         SystemOutPrint.println("context  project name = " + transformInvocation.getContext().getProjectName()
                 + "context  project name = " + transformInvocation.getContext().getPath()
                 + " , isIncremental = " + transformInvocation.isIncremental());
@@ -97,5 +100,6 @@ public class HotTransform extends Transform {
         }
         TransformOutputProvider outputProvider = transformInvocation.getOutputProvider();
         SystemOutPrint.println("output  = " + outputProvider);
+
     }
 }

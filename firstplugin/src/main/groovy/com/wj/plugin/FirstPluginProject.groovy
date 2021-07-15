@@ -1,6 +1,7 @@
 package com.wj.plugin
 
 import com.android.build.gradle.AppExtension
+import com.android.build.gradle.BaseExtension
 import com.wj.plugin.extension.AndroidExtension
 import com.wj.plugin.extension.TemplateSettingExtension
 import com.wj.plugin.extension.TemplateSettingExtensionInProject
@@ -41,7 +42,8 @@ class FirstPluginProject implements Plugin<Project> {
         // testAndroidExtension(project)
 
         /**添加Transform*/
-        project.extensions.findByType(AppExtension.class).registerTransform(new HotTransform())
+        SystemOutPrint.println("project.extensions  all = "+project.extensions.findAll())
+        project.extensions.findByType(BaseExtension.class).registerTransform(new HotTransform())
     }
 
     void createExtensionsForInProject(project) {
