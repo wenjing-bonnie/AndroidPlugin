@@ -87,7 +87,6 @@ public class HotTransform extends Transform {
         SystemOutPrint.println("context  project name = " + transformInvocation.getContext().getProjectName()
                 + "context  project name = " + transformInvocation.getContext().getPath()
                 + " , isIncremental = " + transformInvocation.isIncremental());
-        SystemOutPrint.println(" isIncremental = " + transformInvocation.isIncremental());
        // Collection<TransformInput> inputs = transformInvocation.getInputs();
         Collection<TransformInput> inputs = transformInvocation.getReferencedInputs();
         for (TransformInput input : inputs) {
