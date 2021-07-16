@@ -83,11 +83,13 @@ public class HotTransform extends Transform {
     public void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
        //如果不带super，就不会生成dex文件
         super.transform(transformInvocation);
+
         SystemOutPrint.println("context  project name = " + transformInvocation.getContext().getProjectName()
                 + "context  project name = " + transformInvocation.getContext().getPath()
                 + " , isIncremental = " + transformInvocation.isIncremental());
         SystemOutPrint.println(" isIncremental = " + transformInvocation.isIncremental());
-        Collection<TransformInput> inputs = transformInvocation.getInputs();
+       // Collection<TransformInput> inputs = transformInvocation.getInputs();
+        Collection<TransformInput> inputs = transformInvocation.getReferencedInputs();
         for (TransformInput input : inputs) {
             //返回的是ImmutableJarInput
             for (JarInput jar : input.getJarInputs()) {
