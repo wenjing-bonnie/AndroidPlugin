@@ -52,8 +52,8 @@ public class HotTransform extends Transform {
      */
     @Override
     public Set<? super QualifiedContent.Scope> getScopes() {
-        //return TransformManager.EMPTY_SCOPES;
-        return TransformManager.SCOPE_FULL_PROJECT;
+        return TransformManager.EMPTY_SCOPES;
+        //return TransformManager.SCOPE_FULL_PROJECT;
     }
 
     @Override
