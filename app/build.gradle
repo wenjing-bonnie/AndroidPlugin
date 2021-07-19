@@ -1,7 +1,8 @@
 plugins {
     id 'com.android.application'
     id 'com.wj.firstplugin'
-    id 'global.gradle'
+    //id 'global.gradle'
+    id 'com.android.wj.debug'
 }
 
 android {

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.android.tools.build:apksig:4.2.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/apksig/4.2.1/a41647afcefced7a855fd1616db37f1c9574990e/apksig-4.2.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/apksig/4.2.1/9c0c87f5c52d2bdeed2b19f06c4c6218cb08e860/apksig-4.2.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,6 +1,7 @@
 rootProject.name = "AndroidPlugin"
 include ':app'
 include ':firstplugin'
+include ':wjplugin'
 
 def prefix = "<<<<<<<settings.gradle<<<<<<<<<<    "
 
