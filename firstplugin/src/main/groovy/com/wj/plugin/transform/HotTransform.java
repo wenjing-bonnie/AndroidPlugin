@@ -100,7 +100,7 @@ public class HotTransform extends Transform {
         for (TransformInput input : inputs) {
             //返回的是ImmutableJarInput。
             for (JarInput jar : input.getJarInputs()) {
-                SystemOutPrint.println("jar file = " + jar.getFile());
+                //SystemOutPrint.println("jar file = " + jar.getFile());
                 //TODO 在这里增加处理.jar文件的代码
 
                 //获取Transforms的输出目录
@@ -110,7 +110,7 @@ public class HotTransform extends Transform {
             }
             //返回的是ImmutableDirectoryInput
             for (DirectoryInput directory : input.getDirectoryInputs()) {
-                SystemOutPrint.println("directory file = " + directory.getFile());
+               // SystemOutPrint.println("directory file = " + directory.getFile());
                 //TODO 在这里增加处理.class文件的代码
 
                 //获取Transforms的输出目录
