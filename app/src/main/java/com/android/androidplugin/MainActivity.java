@@ -12,10 +12,11 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(getClass().getSimpleName(), "channel = " + getChannelFromAndroidMainfest());
+        Log.d(getClass().getSimpleName(), "channel = " + getChannelFromAndroidManifest());
+        Log.d(getClass().getSimpleName(),"channel = "+BuildConfig.CHANNEL);
     }
 
-    private String getChannelFromAndroidMainfest() {
+    private String getChannelFromAndroidManifest() {
         String metaChannel = "";
         try {
             ApplicationInfo info = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);

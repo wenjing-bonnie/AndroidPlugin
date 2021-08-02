@@ -1,3 +1,6 @@
+import com.android.build.gradle.api.ApplicationVariant
+import com.android.build.gradle.api.BaseVariantOutput
+
 plugins {
     id 'com.android.application'
     //TODO 暂时隐藏学习的时候创建的第一个插件，使用wjplugin添加一个有具体功能的插件
@@ -33,16 +36,19 @@ android {
         huawei {
             manifestPlaceholders = [CHANNEL: "huawei"]
             dimension = "channel"
+            buildConfigField("String", "CHANNEL", "\"huawei\"")
         }
 
         oppo {
             manifestPlaceholders = [CHANNEL: "oppo"]
             dimension = "channel"
+            buildConfigField("String", "CHANNEL", "\"oppo\"")
         }
 
         xiaomi {
             manifestPlaceholders = [CHANNEL: "xiaomi"]
             dimension = "channel"
+            buildConfigField("String", "CHANNEL", "\"xiaomi\"")
         }
     }
 }
@@ -51,8 +57,21 @@ def prefix = "@@@@@@@@@@@@@@ app @@@@@@@@@@@@@   "
 
 
 this.afterEvaluate {
-    this.android.applicationVariants.all { variant ->
+    //当前variant的类型为application类型
+    this.android.applicationVariants.all { ApplicationVariant variant ->
         println(prefix + "name = " + variant.name)
+        //得到每个variant中的task，然后进行对Task进行hook
+        variant.assemble.doFirst {
+            println(prefix + " assemble task do first ")
+        }
+        //修改每个variant的输出的apk的名字
+        variant.outputs.all { output ->
+            println(prefix + "name  = " + outputFileName)
+            String newApk = "app-${variant.baseName}-${variant.versionName}.apk"
+            println(prefix + "newApkName = " + newApk)
+            //outputFileName = newApk
+        }
+
     }
 }
 
