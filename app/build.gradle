@@ -26,9 +26,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-//特色产品:同一套代码生产出不同特色的馋哦
+//特色产品:同一套代码生产出不同特色的产品
     flavorDimensions "channel"
     productFlavors {
+
         huawei {
             manifestPlaceholders = [CHANNEL: "huawei"]
             dimension = "channel"
@@ -43,11 +44,17 @@ android {
             manifestPlaceholders = [CHANNEL: "xiaomi"]
             dimension = "channel"
         }
-
     }
 }
 
 def prefix = "@@@@@@@@@@@@@@ app @@@@@@@@@@@@@   "
+
+
+this.afterEvaluate {
+    this.android.applicationVariants.all { variant ->
+        println(prefix + "name = " + variant.name)
+    }
+}
 
 //自定义Task
 task firstTask {
