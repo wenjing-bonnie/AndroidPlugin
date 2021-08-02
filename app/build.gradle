@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
-    id 'com.wj.firstplugin'
+    //TODO 暂时隐藏学习的时候创建的第一个插件，使用wjplugin添加一个有具体功能的插件
+    //id 'com.wj.firstplugin'
     //id 'global.gradle'
     id 'com.android.wj.debug'
 }
@@ -76,8 +77,9 @@ task(thirdTask) {
 //方法二：直接从tasks的找到preBuild这个task即可
 tasks.preBuild.dependsOn(firstTask, secondTask, thirdTask)
 
-//自定义插件中的输入属性的设置
-templateSettingExtension {
+//TODO 暂时隐藏学习的时候创建的第一个插件，使用wjplugin添加一个有具体功能的插件
+//自定义firstplugin插件中的输入属性的设置
+/*templateSettingExtension {
     compileSdk = "1.0.0"
     interfaceSourceDir = file("src/main/java/mvp")
 }
@@ -85,7 +87,8 @@ templateSettingExtensionInProject {
     compileSdk = "1.0.0"
     interfaceSourceDir = file("src/main/java/mvp")
 }
-//多层闭包的属性扩展
+
+//自定义firstplugin插件多层闭包的属性扩展
 androidExtension {
     compileSdkVersion = "1.0.0"
     buildToolsVersion = "29.0.0"
@@ -104,7 +107,7 @@ androidExtension {
         }
 
     }
-}
+}*/
 
 configurations {
     firstConfiguration {
