@@ -17,10 +17,10 @@
             </intent-filter>
         </activity>
 
-<!--        <meta-data-->
-<!--            android:name="channel"-->
-<!--            android:value="${CHANNEL}"-->
-<!--            />-->
+        <!--设置多渠道-->
+        <meta-data
+            android:name="channel"
+            android:value="${CHANNEL}" />
 
     </application>
 

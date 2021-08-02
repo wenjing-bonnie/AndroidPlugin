@@ -26,18 +26,25 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+//特色产品:同一套代码生产出不同特色的馋哦
+    flavorDimensions "channel"
+    productFlavors {
+        huawei {
+            manifestPlaceholders = [CHANNEL: "huawei"]
+            dimension = "channel"
+        }
 
-//    productFlavors {
-//        huawei {
-//            manifestPlaceholders = [channel: "huawei"]
-//            dimension = "version"
-//        }
-//
-//        oppo {
-//            manifestPlaceholders = [channel: "oppo"]
-//            dimension = "version"
-//        }
-//   }
+        oppo {
+            manifestPlaceholders = [CHANNEL: "oppo"]
+            dimension = "channel"
+        }
+
+        xiaomi {
+            manifestPlaceholders = [CHANNEL: "xiaomi"]
+            dimension = "channel"
+        }
+
+    }
 }
 
 def prefix = "@@@@@@@@@@@@@@ app @@@@@@@@@@@@@   "
