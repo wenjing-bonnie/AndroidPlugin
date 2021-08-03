@@ -56,16 +56,16 @@ android {
 def prefix = "@@@@@@@@@@@@@@ app @@@@@@@@@@@@@   "
 
 
-this.afterEvaluate {
+/*this.afterEvaluate {
     //当前variant的类型为application类型
     this.android.applicationVariants.all { ApplicationVariant variant ->
         println(prefix + "name = " + variant.name)
         //得到每个variant中的task，然后进行对Task进行hook
-        variant.assemble.doFirst {
+        variant.getAssembleProvider().get().doFirst {
             println(prefix + " assemble task do first ")
         }
         //修改每个variant的输出的apk的名字
-        variant.outputs.all { output ->
+        variant.outputs.all { // output ->
             println(prefix + "name  = " + outputFileName)
             String newApk = "app-${variant.baseName}-${variant.versionName}.apk"
             println(prefix + "newApkName = " + newApk)
@@ -73,7 +73,7 @@ this.afterEvaluate {
         }
 
     }
-}
+}*/
 
 //自定义Task
 task firstTask {
