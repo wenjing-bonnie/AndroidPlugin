@@ -23,7 +23,7 @@ import java.util.Set;
  *
  * @author wenjing.liu
  */
-public class LeakCanaryTransform extends Transform {
+public class AutoLogTransform extends Transform {
 
     /**
      * 设置该Task的名字
