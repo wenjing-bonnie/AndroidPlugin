@@ -1,7 +1,7 @@
 package com.android.wj.debug
 
 import com.android.build.gradle.AppExtension
-import com.android.wj.debug.transform.AutoLogTransform
+import com.android.wj.debug.autotransform.AutoLogTransform
 import com.android.wj.debug.utils.SystemOutPrintln
 import org.gradle.api.Plugin
 import org.gradle.api.Project
