@@ -1,6 +1,8 @@
 package com.android.wj.debug.autologvisitor;
 
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.AdviceAdapter;
 
 /**
@@ -23,4 +25,30 @@ public class AutoLogAdviceAdapter extends AdviceAdapter {
     protected AutoLogAdviceAdapter(int api, MethodVisitor methodVisitor, int access, String name, String descriptor) {
         super(api, methodVisitor, access, name, descriptor);
     }
+
+    /**
+     * 开始扫描该方法时回调该方法
+     */
+    @Override
+    public void visitCode() {
+        super.visitCode();
+    }
+
+    /**
+     * 进入到该方法的时候回调该方法
+     */
+    @Override
+    protected void onMethodEnter() {
+        super.onMethodEnter();
+    }
+
+    /**
+     * 即将从该方法出去的时候回调该方法
+     * @param opcode
+     */
+    @Override
+    protected void onMethodExit(int opcode) {
+        super.onMethodExit(opcode);
+    }
+
 }

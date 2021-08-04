@@ -15,6 +15,7 @@ import com.android.wj.debug.autologvisitor.AutoLogClassVisitor;
 import com.android.wj.debug.utils.SystemOutPrintln;
 
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
 import java.io.File;
@@ -27,6 +28,8 @@ import java.util.Set;
 
 /**
  * Created by wenjing.liu on 2021/7/19 in J1.
+ * <p>
+ * 为所有的方法添加日志
  *
  * @author wenjing.liu
  */
@@ -60,13 +63,7 @@ public class AutoLogTransform extends Transform {
     @Override
     public Set<? super QualifiedContent.Scope> getScopes() {
         return TransformManager.SCOPE_FULL_PROJECT;
-        //return TransformManager.EMPTY_SCOPES;
     }
-
-//    @Override
-//    public Set<? super QualifiedContent.Scope> getReferencedScopes() {
-//        return TransformManager.SCOPE_FULL_PROJECT;
-//    }
 
     /**
      * 是否增量编译
@@ -82,15 +79,25 @@ public class AutoLogTransform extends Transform {
     @Override
     public void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         super.transform(transformInvocation);
+        //TODO 根据是否需要增量编译，做下处理
+
         Collection<TransformInput> transformInputs = transformInvocation.getInputs();
         TransformOutputProvider outputProvider = transformInvocation.getOutputProvider();
         for (TransformInput input : transformInputs) {
+            //jar包不做处理,原样复制
             for (JarInput jar : input.getJarInputs()) {
-                //  SystemOutPrintln.println("jar name = " + jar.getName());
+                //获取Transforms的输出目录
+                File dest = outputProvider.getContentLocation(jar.getFile().getAbsolutePath(), jar.getContentTypes(), jar.getScopes(), Format.JAR);
+                //将修改之后的文件拷贝到对应outputProvider的目录中
+                FileUtils.copyFile(jar.getFile(), dest);
             }
+            //处理class文件
             for (DirectoryInput directory : input.getDirectoryInputs()) {
-                SystemOutPrintln.println("directory name = " + directory.getName());
-                handleDirectoryInput(directory, outputProvider);
+                //获取Transforms的输出目录
+                File dest = outputProvider.getContentLocation(directory.getName(), directory.getContentTypes(), directory.getScopes(), Format.DIRECTORY);
+                handleDirectoryInput(directory);
+                //将修改之后的文件拷贝到对应outputProvider的目录中
+                FileUtils.copyDirectory(directory.getFile(), dest);
             }
         }
     }
@@ -99,32 +106,25 @@ public class AutoLogTransform extends Transform {
      * 找到Application，然后添加代码
      *
      * @param directoryInput
-     * @param outputProvider
      */
-    private void handleDirectoryInput(DirectoryInput directoryInput, TransformOutputProvider outputProvider) {
+    private void handleDirectoryInput(DirectoryInput directoryInput) {
         File directorFile = directoryInput.getFile();
-        SystemOutPrintln.println("file path = " + directorFile.getPath());
-        File outputFile = outputProvider.getContentLocation(directoryInput.getName(), directoryInput.getContentTypes(), directoryInput.getScopes(), Format.DIRECTORY);
-        handleFileFromDirectory(directorFile, outputFile);
-        try {
-            FileUtils.copyDirectory(directoryInput.getFile(), outputFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SystemOutPrintln.println("Handle the directory path =  " + directorFile.getPath());
+        handleFileInDirectory(directorFile);
     }
 
     /**
-     * 得到里面的file,进行处理file
+     * 遍历里面的file,进行处理file
      *
      * @param input
      */
-    private void handleFileFromDirectory(File input, File output) {
+    private void handleFileInDirectory(File input) {
         if (!input.isDirectory()) {
-            addLogForClass(input.getAbsolutePath(), output.getAbsolutePath());
+            addLogForClass(input.getAbsolutePath(), input.getAbsolutePath());
             return;
         }
         for (File file : input.listFiles()) {
-            handleFileFromDirectory(file, output);
+            handleFileInDirectory(file);
         }
 
     }
@@ -139,13 +139,31 @@ public class AutoLogTransform extends Transform {
         if (input == null || output == null) {
             return;
         }
-        SystemOutPrintln.println("input = " + input + " , output = " + output);
+        SystemOutPrintln.println(String.format("Add log for \" %s \"", input));
         try {
             FileInputStream is = new FileInputStream(input);
             ClassReader reader = new ClassReader(is);
-            ClassWriter writer = new ClassWriter(reader,ClassWriter.COMPUTE_MAXS);
+            /***
+             * @param reader ClassReader
+             * @param flags:
+             *             0:不自动计算操作数栈和局部变量表的大小,需要手动指定
+             *             COMPUTE_MAXS:自动计算操作数栈和局部变量表的大小,但必须手动触发
+             *             COMPUTE_FRAMES:不仅自动计算操作数栈和局部变量表的大小,还会自动计算StackMapFrames
+             *
+             */
+            ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
+            //将文件进行增加log
             AutoLogClassVisitor classVisitor = new AutoLogClassVisitor(writer);
+
+            /**
+             * @param classVisitor:给定具体处理逻辑的ClassVisitor,通常需要自定义类来继承抽象类ClassVisitor.
+             * @param parsingOptions:解析.class文件的选项.其中有几个取值:
+             *                  SKIP_CODE:跳过方法体的code属性,比如方法字节码、异常表等;
+             *                  SKIP_DEBUG:跳过文件中的调试信息,比如行号等;下面的这些方法不会被调用到 {@link ClassVisitor#visitSource}, {@link MethodVisitor#visitLocalVariable}, {@link MethodVisitor#visitLineNumber} and {@link MethodVisitor#visitParameter}
+             *                  SKIP_FRAMES:跳过文件StackMapTable和StackMap属性;当ClassWriter设置 {@link ClassWriter#COMPUTE_FRAMES}才会起作用
+             *                  EXPAND_FRAMES:跳过文件的StackMapTable属性*/
             reader.accept(classVisitor, ClassReader.EXPAND_FRAMES);
+            //然后将内容重新写入该文件中
             FileOutputStream fos = new FileOutputStream(output);
             fos.write(writer.toByteArray());
             fos.close();

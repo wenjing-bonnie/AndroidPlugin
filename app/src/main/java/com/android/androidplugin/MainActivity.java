@@ -26,6 +26,11 @@ public class MainActivity extends Activity {
             metaChannel = info.metaData.getString("channel");
         } catch (PackageManager.NameNotFoundException e) {
         }
+        dd(0,"",null);
         return metaChannel;
+    }
+
+    private void dd(int a,String b ,int[]c){
+
     }
 }
