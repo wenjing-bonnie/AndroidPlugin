@@ -19,7 +19,7 @@ import org.objectweb.asm.commons.AdviceAdapter;
 public class AutoLogClassVisitor extends ClassVisitor {
 
     public AutoLogClassVisitor(ClassVisitor visitor) {
-        // ASM API versions.  由于AdviceAdapter目前只支持到ASM7,所以这里只能设置Opcodes.ASM7,有时候会抛出
+        // ASM API versions.  由于AdviceAdapter目前只支持到ASM7,所以这里只能设置Opcodes.ASM7,有时候会抛出(不是必现，还没有得出规律)
         //设置成Opcodes.ASM9的时候,有时候会出现"com.android.tools.r8.errors.b: Absent Code attribute in method that is not native or abstract"异常,改成ASM7即没有,暂时还没有找到原因
         super(Opcodes.ASM9, visitor);
     }
