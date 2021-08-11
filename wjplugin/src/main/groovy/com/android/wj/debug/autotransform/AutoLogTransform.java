@@ -102,6 +102,7 @@ public class AutoLogTransform extends Transform {
         }
     }
 
+
     /**
      * 找到Application，然后添加代码
      *
@@ -147,8 +148,10 @@ public class AutoLogTransform extends Transform {
              * @param reader ClassReader
              * @param flags:
              *             0:不自动计算操作数栈和局部变量表的大小,需要手动指定
-             *             COMPUTE_MAXS:自动计算操作数栈和局部变量表的大小,但必须手动触发
-             *             COMPUTE_FRAMES:不仅自动计算操作数栈和局部变量表的大小,还会自动计算StackMapFrames
+             *             COMPUTE_MAXS:自动计算操作数栈和局部变量表的大小,但必须手动调用{@link org.objectweb.asm.MethodVisitor#visitMaxs()}触发,可以传入任意参数
+             *             但栈帧的大小需要手动计算
+             *             COMPUTE_FRAMES:自动计算所有内容。不仅自动计算操作数栈和局部变量表的大小,还会自动计算StackMapFrames，但是仍需要手动调用{@link org.objectweb.asm.MethodVisitor#visitMaxs()}触发,可以传入任意参数
+             *             但是这些标识也会让性能损失：COMPUTE_MAXS慢10% COMPUTE_FRAMES慢2倍
              *
              */
             ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
@@ -158,10 +161,19 @@ public class AutoLogTransform extends Transform {
             /**
              * @param classVisitor:给定具体处理逻辑的ClassVisitor,通常需要自定义类来继承抽象类ClassVisitor.
              * @param parsingOptions:解析.class文件的选项.其中有几个取值:
-             *                  SKIP_CODE:跳过方法体的code属性,比如方法字节码、异常表等;
-             *                  SKIP_DEBUG:跳过文件中的调试信息,比如行号等;下面的这些方法不会被调用到 {@link ClassVisitor#visitSource}, {@link MethodVisitor#visitLocalVariable}, {@link MethodVisitor#visitLineNumber} and {@link MethodVisitor#visitParameter}
-             *                  SKIP_FRAMES:跳过文件StackMapTable和StackMap属性;当ClassWriter设置 {@link ClassWriter#COMPUTE_FRAMES}才会起作用
-             *                  EXPAND_FRAMES:跳过文件的StackMapTable属性*/
+             *                  {@link ClassReader.SKIP_CODE}:
+             *                      跳过方法体的code属性,即Code属性下的内容不会被转换或访问;
+             *                  {@link ClassReader.SKIP_DEBUG}:
+             *                      跳过文件中的调试信息,即源文件、源码调试扩展、局部变量表、行号表属性、局部变量表类型表;
+             *                      下面的这些方法不会被调用到 {@link ClassVisitor#visitSource}, {@link MethodVisitor#visitLocalVariable},
+             *                      {@link MethodVisitor#visitLineNumber} and {@link MethodVisitor#visitParameter}
+             *                  {@link ClassReader.SKIP_FRAMES}:
+             *                      跳过文件StackMapTable和StackMap属性，即{@link MethodVisitor#visitFrame}不会被方法;
+             *                      当ClassWriter设置 {@link ClassWriter#COMPUTE_FRAMES}才会起作用
+             *                  {@link ClassReader.EXPAND_FRAMES}:
+             *                      跳过文件的StackMapTable属性.默认的栈图是以原始格式被访问,设置此标识,栈图始终以扩展格式进行访问,大幅度降低性能
+             *
+             */
             reader.accept(classVisitor, ClassReader.EXPAND_FRAMES);
             //然后将内容重新写入该文件中
             FileOutputStream fos = new FileOutputStream(output);
