@@ -114,6 +114,7 @@ public class AutoLogAdviceAdapter extends AdviceAdapter {
 
             //输出方法执行时间,对应代码:Log.d("AUTO", String.valueOf(callTime));
             //logMethodExit();
+            //输出方法执行时间,对应代码:Log.d("AUTO", String.valueOf(callTime));
             logStringMethodExit();
 
             // visitLocalVariable()描述或定义存储在Code属性的LocalVariableTable和LocalVariableTypeTable属性中的调试信息。 它们不是正常操作所必需的，与StackMapTable存储的信息不同。
@@ -166,7 +167,7 @@ public class AutoLogAdviceAdapter extends AdviceAdapter {
         methodVisitor.visitVarInsn(LLOAD, 5);
         methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;", false);
         methodVisitor.visitInsn(AASTORE);
-        methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/String", "valueOf", "(J)Ljava/lang/String;", false);
+        methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/String", "format", "(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;", false);
         methodVisitor.visitMethodInsn(INVOKESTATIC, "android/util/Log", "d", "(Ljava/lang/String;Ljava/lang/String;)I", false);
         methodVisitor.visitInsn(POP);
     }
