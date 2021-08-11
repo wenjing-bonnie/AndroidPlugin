@@ -50,19 +50,6 @@ public class AutoLogClassVisitor extends ClassVisitor {
         SystemOutPrintln.println("visitSource source =" + source + " , debug = " + debug);
     }
 
-    @Override
-    public void visitOuterClass(String owner, String name, String descriptor) {
-        super.visitOuterClass(owner, name, descriptor);
-        SystemOutPrintln.println("visitOuterClass owner =" + owner + " , name = " + name);
-    }
-
-    @Override
-    public void visitInnerClass(String name, String outerName, String innerName, int access) {
-        super.visitInnerClass(name, outerName, innerName, access);
-        SystemOutPrintln.println("visitOuterClass name =" + name + " , outerName = " + outerName + " , innerName = " + innerName);
-
-    }
-
     /**
      * 扫描到类的方法回调该方法
      *
