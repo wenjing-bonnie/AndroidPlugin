@@ -99,29 +99,27 @@ public class AutoLogAdviceAdapter extends AdviceAdapter {
      */
     @Override
     public void visitInsn(int opcode) {
-        if (!isInjectCallTime()) {
+        if (!isInjectCallTime() || opcode < IRETURN || opcode > RETURN) {
             super.visitInsn(opcode);
             return;
         }
         //方法返回的时候,添加执行时间
-        if (opcode >= IRETURN && opcode <= RETURN) {
-            SystemOutPrintln.println(" = onMethodExit");
-            //添加方法调用之后的时间,对应代码:long callTime = System.currentTimeMillis() - beginTime;
-            methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
-            methodVisitor.visitVarInsn(LLOAD, 3);
-            methodVisitor.visitInsn(LSUB);
-            methodVisitor.visitVarInsn(LSTORE, 5);
+        SystemOutPrintln.println(" = onMethodExit");
+        //添加方法调用之后的时间,对应代码:long callTime = System.currentTimeMillis() - beginTime;
+        methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
+        methodVisitor.visitVarInsn(LLOAD, 3);
+        methodVisitor.visitInsn(LSUB);
+        methodVisitor.visitVarInsn(LSTORE, 5);
 
-            //输出方法执行时间,对应代码:Log.d("AUTO", String.valueOf(callTime));
-            //logMethodExit();
-            //输出方法执行时间,对应代码:Log.d("AUTO", String.valueOf(callTime));
-            logStringMethodExit();
+        //输出方法执行时间,对应代码:Log.d("AUTO", String.valueOf(callTime));
+        //logMethodExit();
+        //输出方法执行时间,对应代码:Log.d("AUTO", String.valueOf(callTime));
+        logStringMethodExit();
 
-            // visitLocalVariable()描述或定义存储在Code属性的LocalVariableTable和LocalVariableTypeTable属性中的调试信息。 它们不是正常操作所必需的，与StackMapTable存储的信息不同。
-            // 换句话说，除非您想提供调试信息，否则无论是否自动计算堆栈映射帧，您都不需要调用visitLocalVariable() 。
-            //请注意这些属性中存储的信息的差异。 LocalVariable[Type]Table存储有关源级语言的局部变量的名称和[泛型]类型及其范围。 StackMapTable存储有关字节码验证器的JVM类型系统的局部变量和操作数堆栈条目的类型信息。
-            //methodVisitor.visitLocalVariable();
-        }
+        // visitLocalVariable()描述或定义存储在Code属性的LocalVariableTable和LocalVariableTypeTable属性中的调试信息。 它们不是正常操作所必需的，与StackMapTable存储的信息不同。
+        // 换句话说，除非您想提供调试信息，否则无论是否自动计算堆栈映射帧，您都不需要调用visitLocalVariable() 。
+        //请注意这些属性中存储的信息的差异。 LocalVariable[Type]Table存储有关源级语言的局部变量的名称和[泛型]类型及其范围。 StackMapTable存储有关字节码验证器的JVM类型系统的局部变量和操作数堆栈条目的类型信息。
+        //methodVisitor.visitLocalVariable();
         super.visitInsn(opcode);
     }
 
@@ -159,7 +157,7 @@ public class AutoLogAdviceAdapter extends AdviceAdapter {
      */
     private void logStringMethodExit() {
         methodVisitor.visitLdcInsn("AUTO");
-        methodVisitor.visitLdcInsn("cost time is [%l] ms");
+        methodVisitor.visitLdcInsn("cost time is [%d] ms");
         methodVisitor.visitInsn(ICONST_1);
         methodVisitor.visitTypeInsn(ANEWARRAY, "java/lang/Object");
         methodVisitor.visitInsn(DUP);
@@ -170,6 +168,11 @@ public class AutoLogAdviceAdapter extends AdviceAdapter {
         methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/String", "format", "(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;", false);
         methodVisitor.visitMethodInsn(INVOKESTATIC, "android/util/Log", "d", "(Ljava/lang/String;Ljava/lang/String;)I", false);
         methodVisitor.visitInsn(POP);
+    }
+
+
+    private void logStringTagMethodExit() {
+
     }
 
     /**

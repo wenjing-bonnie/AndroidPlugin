@@ -20,7 +20,7 @@ public class ASMByte implements View.OnClickListener {
         System.out.println("Other running code");
         long callTime = System.currentTimeMillis() - beginTime;
         // Log.d(getClass().getSimpleName(), String.format("%s cost time is [%l]ms", name, callTime));
-        Log.d("AUTO", String.format("cost time is [%l]ms", callTime));
+        Log.d("AUTO", String.format("cost time is [%d]ms", callTime));
 
         return aa + bb;
     }
