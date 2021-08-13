@@ -152,7 +152,8 @@ public class AutoLogAdviceAdapter extends AdviceAdapter {
      */
     private void logStringMethodExit() {
         methodVisitor.visitLdcInsn("AUTO");
-        methodVisitor.visitLdcInsn("cost time is [%d] ms");
+        String stringFormat = "[" + name + "] cost time is [%d] ms;";
+        methodVisitor.visitLdcInsn(stringFormat);
         methodVisitor.visitInsn(ICONST_1);
         //创建数组
         methodVisitor.visitTypeInsn(ANEWARRAY, "java/lang/Object");
