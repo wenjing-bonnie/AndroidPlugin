@@ -1,6 +1,5 @@
 package com.android.wj.debug.autologvisitor;
 
-import com.android.tools.r8.v.b.L;
 import com.android.wj.debug.utils.SystemOutPrintln;
 
 import org.objectweb.asm.Label;
@@ -8,7 +7,6 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.AdviceAdapter;
-import org.w3c.dom.ls.LSLoadEvent;
 
 /**
  * Created by wenjing.liu on 2021/8/3 in J1.
@@ -27,6 +25,9 @@ public class AutoLogAdviceAdapter extends AdviceAdapter {
      * 是否开启统计调用时间
      */
     private boolean isInjectCallTime = true;
+
+    private Label labelBegin;
+    private Label labelEnd;
 
     /**
      * Constructs a new {@link AdviceAdapter}.
@@ -75,20 +76,18 @@ public class AutoLogAdviceAdapter extends AdviceAdapter {
             return;
         }
         //添加方法调用前的时间,对应代码:long beginTime = System.currentTimeMillis();
-        methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
-        methodVisitor.visitVarInsn(Opcodes.LSTORE, 3);
-
+        systemCurrentTimeMillisOnMethodEnter();
     }
 
-    /**
-     * 即将从该方法出去的时候回调该方法
-     *
-     * @param opcode
-     */
-    @Override
-    protected void onMethodExit(int opcode) {
-        super.onMethodExit(opcode);
 
+    /**
+     * 添加方法调用前的时间,对应代码:long beginTime = System.currentTimeMillis();
+     */
+    private void systemCurrentTimeMillisOnMethodEnter() {
+        labelBegin = new Label();
+        methodVisitor.visitLabel(labelBegin);
+        methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
+        methodVisitor.visitVarInsn(Opcodes.LSTORE, 3);
     }
 
     /**
@@ -106,14 +105,11 @@ public class AutoLogAdviceAdapter extends AdviceAdapter {
         //方法返回的时候,添加执行时间
         SystemOutPrintln.println(" = onMethodExit");
         //添加方法调用之后的时间,对应代码:long callTime = System.currentTimeMillis() - beginTime;
-        methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
-        methodVisitor.visitVarInsn(LLOAD, 3);
-        methodVisitor.visitInsn(LSUB);
-        methodVisitor.visitVarInsn(LSTORE, 5);
+        systemCurrentTimeMillisOnMethodExit();
 
-        //输出方法执行时间,对应代码:Log.d("AUTO", String.valueOf(callTime));
+        //初级:输出方法执行时间,对应代码:Log.d("AUTO", String.valueOf(callTime));
         //logMethodExit();
-        //输出方法执行时间,对应代码:Log.d("AUTO", String.valueOf(callTime));
+        //中级:输出方法执行时间,对应代码:Log.d("AUTO", String.valueOf(callTime));
         logStringMethodExit();
 
         // visitLocalVariable()描述或定义存储在Code属性的LocalVariableTable和LocalVariableTypeTable属性中的调试信息。 它们不是正常操作所必需的，与StackMapTable存储的信息不同。
@@ -124,20 +120,19 @@ public class AutoLogAdviceAdapter extends AdviceAdapter {
     }
 
     @Override
-    public void visitLabel(Label label) {
-        super.visitLabel(label);
-        //label的作用是为了条件跳转，其实也可以理解成字节码指令的参数。所以label必须对应一条字节码指令，通过visitLabel(label)来调用，并且visitLabel的调用必须紧跟随着label对象指定的指令
-    }
-
-//    @Override
-//    public void visitMaxs(int maxStack, int maxLocals) {
-//        super.visitMaxs(maxStack + 3, maxLocals + 4);
-//    }
-
-    @Override
     public void visitEnd() {
         super.visitEnd();
         SystemOutPrintln.println(" = visitEnd");
+    }
+
+    /**
+     * 添加方法调用之后的时间,对应代码:long callTime = System.currentTimeMillis() - beginTime;
+     */
+    private void systemCurrentTimeMillisOnMethodExit() {
+        methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/System", "currentTimeMillis", "()J", false);
+        methodVisitor.visitVarInsn(LLOAD, 3);
+        methodVisitor.visitInsn(LSUB);
+        methodVisitor.visitVarInsn(LSTORE, 5);
     }
 
     /**
@@ -159,8 +154,11 @@ public class AutoLogAdviceAdapter extends AdviceAdapter {
         methodVisitor.visitLdcInsn("AUTO");
         methodVisitor.visitLdcInsn("cost time is [%d] ms");
         methodVisitor.visitInsn(ICONST_1);
+        //创建数组
         methodVisitor.visitTypeInsn(ANEWARRAY, "java/lang/Object");
+        //复制栈顶
         methodVisitor.visitInsn(DUP);
+        //将常量压入栈
         methodVisitor.visitInsn(ICONST_0);
         methodVisitor.visitVarInsn(LLOAD, 5);
         methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;", false);
@@ -168,6 +166,11 @@ public class AutoLogAdviceAdapter extends AdviceAdapter {
         methodVisitor.visitMethodInsn(INVOKESTATIC, "java/lang/String", "format", "(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;", false);
         methodVisitor.visitMethodInsn(INVOKESTATIC, "android/util/Log", "d", "(Ljava/lang/String;Ljava/lang/String;)I", false);
         methodVisitor.visitInsn(POP);
+        labelEnd = new Label();
+        methodVisitor.visitLabel(labelEnd);
+        methodVisitor.visitLocalVariable("beginTime", "J", null, labelBegin, labelEnd, 3);
+        //当设置了ClassWriter.COMPUTE_MAXS的时候，会自动的计算visitMaxs(int maxStack, int maxLocals)
+        //methodVisitor.visitMaxs(0,0);
     }
 
 
