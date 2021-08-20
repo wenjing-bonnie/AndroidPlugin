@@ -6,7 +6,7 @@ plugins {
     //TODO 暂时隐藏学习的时候创建的第一个插件，使用wjplugin添加一个有具体功能的插件
     //id 'com.wj.firstplugin'
     //id 'global.gradle'
-    //id 'com.android.wj.debug'
+    id 'com.android.wj.debug'
 }
 
 android {
