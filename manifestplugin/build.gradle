@@ -1,0 +1,22 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+dependencies {
+    implementation gradleApi()
+    implementation localGroovy()
+}
+
+repositories {
+    mavenCentral()
+}
+
+uploadArchives{
+    repositories {
+        mavenDeployer{
+            pom.groupId="com.wj.plugin"
+            pom.artifactId = "manifestplugin"
+            pom.version = "1.0.0"
+            repository(url:uri('../plugins'))
+        }
+    }
+}

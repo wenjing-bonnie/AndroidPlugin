@@ -7,16 +7,17 @@ plugins {
     //id 'com.wj.firstplugin'
     //id 'global.gradle'
     id 'com.android.wj.debug'
+    id 'com.wj.plugin.manifest'
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 30
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.android.androidplugin"
         minSdkVersion 23
-        targetSdkVersion 31
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
