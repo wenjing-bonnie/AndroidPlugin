@@ -5,4 +5,12 @@
   <groupId>com.wj.plugin</groupId>
   <artifactId>manifestplugin</artifactId>
   <version>1.0.0</version>
+  <dependencies>
+    <dependency>
+      <groupId>com.android.tools.build</groupId>
+      <artifactId>gradle</artifactId>
+      <version>4.2.1</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
 </project>

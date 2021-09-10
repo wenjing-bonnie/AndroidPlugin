@@ -43,7 +43,8 @@ class FirstPluginProject implements Plugin<Project> {
 
         /**添加Transform*/
         SystemOutPrint.println("project.extensions  all = "+project.extensions.findAll())
-        project.extensions.findByType(BaseExtension.class).registerTransform(new HotTransform())
+        //TODO 暂时隐藏该功能
+        //project.extensions.findByType(BaseExtension.class).registerTransform(new HotTransform())
     }
 
     void createExtensionsForInProject(project) {
