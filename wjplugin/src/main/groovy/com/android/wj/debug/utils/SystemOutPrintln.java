@@ -8,6 +8,7 @@ package com.android.wj.debug.utils;
  * @author wenjing.liu
  */
 public class SystemOutPrintln {
+    private static final boolean DEBUG = false;
     private static String TAG = " ~*~*~*~*~*~* DebugPlugin ~*~*~*~*~*~* ";
 
     /**
@@ -16,6 +17,8 @@ public class SystemOutPrintln {
      * @param info
      */
     public static void println(String info) {
-        System.out.println(String.format("%s %s", TAG, info));
+        if (DEBUG) {
+            System.out.println(String.format("%s %s", TAG, info));
+        }
     }
 }

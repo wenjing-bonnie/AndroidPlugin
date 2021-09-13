@@ -15,6 +15,6 @@ public class AddExportForManifestTask extends DefaultTask {
 
     @TaskAction
     public void run() {
-        SystemOutPrint.println(" AddExportForManifestTask is running !");
+        SystemPrint.outPrintln(" AddExportForManifestTask is running !");
     }
 }

@@ -7,13 +7,19 @@ package com.wj.manifest;
  *
  * @author wenjing.liu
  */
-public class SystemOutPrint {
+public class SystemPrint {
 
     private static final boolean DEBUG = true;
 
-    public static void println(String info) {
+    public static void outPrintln(String info) {
         if (DEBUG) {
             System.out.println("#@@#@@#@@#@@#@@#@@# ManifestProject #@@#@@#@@#@@#@@#@@# " + info);
+        }
+    }
+
+    public static void errorPrintln(String info){
+        if (DEBUG) {
+            System.err.println("#@@#@@#@@#@@#@@#@@# ManifestProject #@@#@@#@@#@@#@@#@@# " + info);
         }
     }
 }
