@@ -1,7 +1,6 @@
 package com.wj.manifest
 
 import com.android.build.gradle.AppExtension
-import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task
