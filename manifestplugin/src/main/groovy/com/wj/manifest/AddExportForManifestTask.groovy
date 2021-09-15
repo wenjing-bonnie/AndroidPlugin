@@ -78,6 +78,7 @@ public class AddExportForManifestTask extends DefaultTask {
                 //attributes()取得是在<activity >里面配置的属性值,而里面嵌套的<></>可直接通过.xxx的形式取得
                 def attrs = it.attributes()
                 //如果含有了android:exported,则直接返回.
+                boolean isExported = hasAttributeExported(attrs);
                 if (hasAttributeExported(attrs)) {
                     SystemPrint.outPrintln("已经含有了android:exported,直接返回")
                     //结束本次循环,相当于continue find return true相当于break
@@ -101,8 +102,8 @@ public class AddExportForManifestTask extends DefaultTask {
      * 添加android:export
      */
     void handlerAddExportForActivity(Node activity) {
-        SystemPrint.errorPrintln("activity it = " + activity)
         SystemPrint.outPrintln(String.format("开始添加android:exported"))
+        SystemPrint.errorPrintln("activity it = " + activity)
 
     }
     /**
@@ -112,13 +113,15 @@ public class AddExportForManifestTask extends DefaultTask {
      */
     boolean hasAttributeExported(Map attrs) {
         String ATTRIBUTE_EXPORT = "{http://schemas.android.com/apk/res/android}exported"
-        attrs.each {
+        boolean isExported = false
+        attrs.find {
             SystemPrint.outPrintln("hasAttributeExported key = " + it.key + " , value = " + it.value)
             if (ATTRIBUTE_EXPORT.equals(it.key.toString())) {
+                isExported = true
                 return true
             }
         }
-        return false
+        return isExported
     }
     /**
      * 是否含有<intent-filter>
@@ -126,13 +129,15 @@ public class AddExportForManifestTask extends DefaultTask {
      * @return
      */
     boolean hasIntentFilter(List children) {
-        children.each {
+        boolean isIntent = false
+        children.find {
             SystemPrint.errorPrintln("hasIntentFilter children name = " + it.name())
             if ("intent-filter".equals(it.name())) {
+                isIntent = true
                 return true
             }
         }
-        return false
+        return isIntent
     }
 
 }
