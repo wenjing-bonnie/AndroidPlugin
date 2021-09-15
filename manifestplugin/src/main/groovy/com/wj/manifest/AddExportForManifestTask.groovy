@@ -1,25 +1,11 @@
-package com.wj.manifest;
+package com.wj.manifest
 
-import com.android.aapt.Resources;
 
-import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.TaskAction;
-import org.xml.sax.SAXException;
+import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+import org.xml.sax.SAXException
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import groovy.util.Node;
-import groovy.util.XmlParser;
+import javax.xml.parsers.ParserConfigurationException
 
 /**
  * Created by wenjing.liu on 2021/9/9 in J1.
@@ -32,7 +18,7 @@ public class AddExportForManifestTask extends DefaultTask {
     private String manifestFilePath;
     private List variantNames = new ArrayList<String>();
     protected static final String TAG = "AddExportForManifestTask";
-    private final String ATTRIBUTE_EXPORT = "{http://schemas.android.com/apk/res/android}exported"
+    //private final String ATTRIBUTE_EXPORT = "{http://schemas.android.com/apk/res/android}exported"
 
     /**
      * 设置Manifest文件的路径
@@ -80,46 +66,29 @@ public class AddExportForManifestTask extends DefaultTask {
             return;
         }
         SystemPrint.outPrintln("正在处理\n " + manifestFile.getAbsolutePath());
-        //String content = getManifestFileContent(manifestFile);
-        //SystemPrint.outPrintln("内容为:\n" + content);
         try {
             XmlParser xmlParser = new XmlParser();
             def node = xmlParser.parse(manifestFile);
 
-            SystemPrint.outPrintln("package = " + node.attributes().get("package"));
+            //SystemPrint.outPrintln("package = " + node.attributes().get("package"));
             //node.attributes();获取的一级内容<?xml> <manifest>里设置的内容如:key为package、encoding,value为对应的值
             //node.children();获取的二级内容 <application> <uses-sdk>
             //node.application直接可获取到<application>这级标签
             node.application.activity.each {
-                SystemPrint.errorPrintln("activity it = " + it)
                 //attributes()取得是在<activity >里面配置的属性值,而里面嵌套的<></>可直接通过.xxx的形式取得
                 def attrs = it.attributes()
-                //如果含有了android:exported,则直接返回
-                String ATTRIBUTE_EXPORT = "{http://schemas.android.com/apk/res/android}exported"
-//                if (true) {
-//                    return
-//                }
-
-                attrs.each {
-                    SystemPrint.errorPrintln("activity key = " + it.key + " , value = " + it.value)
-                    if (attrs.containsKey("{http://schemas.android.com/apk/res/android}exported")) {
-                        SystemPrint.outPrintln("containsKey")
-                    }
-                    if ("{http://schemas.android.com/apk/res/android}exported".equals(it.key)) {
-                        SystemPrint.outPrintln("equals")
-                    }
+                //如果含有了android:exported,则直接返回.
+                if (hasAttributeExported(attrs)) {
+                    SystemPrint.outPrintln("已经含有了android:exported,直接返回")
+                    //结束本次循环,相当于continue find return true相当于break
+                    return true
                 }
-                //SystemPrint.outPrintln("intent filter = " + it.children().getAt("intent-filter"))
                 //得到配置的<activity>里面的如<intent-filter>
                 def children = it.children()
-                children.each {
-                    SystemPrint.errorPrintln("activity children name = " + it.name())
-                    if (!attrs.containsKey(ATTRIBUTE_EXPORT) && "intent-filter".equals(it.name)) {
-                        handlerAddExportForActivity()
-                    }
+                if (hasIntentFilter(children)) {
+                    handlerAddExportForActivity(it)
                 }
             }
-
         } catch (ParserConfigurationException e) {
             e.printStackTrace()
         } catch (SAXException e) {
@@ -128,34 +97,42 @@ public class AddExportForManifestTask extends DefaultTask {
             e.printStackTrace()
         }
     }
-
-    void handlerAddExportForActivity() {
-
-        SystemPrint.outPrintln("开始添加android:exported")
+    /**
+     * 添加android:export
+     */
+    void handlerAddExportForActivity(Node activity) {
+        SystemPrint.errorPrintln("activity it = " + activity)
+        SystemPrint.outPrintln(String.format("开始添加android:exported"))
 
     }
-
     /**
-     * 获取Manifest里面的内容
-     *
-     * @param manifestFile
+     * 是否含有android:exported属性
+     * TODO attrs.containsKey(ATTRIBUTE_EXPORT) 不起作用
      * @return
      */
-    private String getManifestFileContent(File manifestFile) {
-        StringBuffer contentBuffer = new StringBuffer();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(manifestFile));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                contentBuffer.append(line);
+    boolean hasAttributeExported(Map attrs) {
+        String ATTRIBUTE_EXPORT = "{http://schemas.android.com/apk/res/android}exported"
+        attrs.each {
+            SystemPrint.outPrintln("hasAttributeExported key = " + it.key + " , value = " + it.value)
+            if (ATTRIBUTE_EXPORT.equals(it.key.toString())) {
+                return true
             }
-            reader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-        return contentBuffer.toString();
+        return false
+    }
+    /**
+     * 是否含有<intent-filter>
+     * @param children
+     * @return
+     */
+    boolean hasIntentFilter(List children) {
+        children.each {
+            SystemPrint.errorPrintln("hasIntentFilter children name = " + it.name())
+            if ("intent-filter".equals(it.name())) {
+                return true
+            }
+        }
+        return false
     }
 
 }
