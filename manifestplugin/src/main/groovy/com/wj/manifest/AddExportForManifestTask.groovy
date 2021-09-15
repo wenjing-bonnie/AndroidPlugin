@@ -13,6 +13,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -30,6 +32,7 @@ public class AddExportForManifestTask extends DefaultTask {
     private String manifestFilePath;
     private List variantNames = new ArrayList<String>();
     protected static final String TAG = "AddExportForManifestTask";
+    private final String ATTRIBUTE_EXPORT = "{http://schemas.android.com/apk/res/android}exported"
 
     /**
      * 设置Manifest文件的路径
@@ -77,18 +80,59 @@ public class AddExportForManifestTask extends DefaultTask {
             return;
         }
         SystemPrint.outPrintln("正在处理\n " + manifestFile.getAbsolutePath());
-        String content = getManifestFileContent(manifestFile);
-        SystemPrint.outPrintln("内容为:\n" + content);
+        //String content = getManifestFileContent(manifestFile);
+        //SystemPrint.outPrintln("内容为:\n" + content);
         try {
             XmlParser xmlParser = new XmlParser();
-           // Node node = xmlParser.parseText(content);
-           // String activity = (String) node.get("activity");
-           // SystemPrint.outPrintln("activity = \n" + activity);
+            def node = xmlParser.parse(manifestFile);
+
+            SystemPrint.outPrintln("package = " + node.attributes().get("package"));
+            //node.attributes();获取的一级内容<?xml> <manifest>里设置的内容如:key为package、encoding,value为对应的值
+            //node.children();获取的二级内容 <application> <uses-sdk>
+            //node.application直接可获取到<application>这级标签
+            node.application.activity.each {
+                SystemPrint.errorPrintln("activity it = " + it)
+                //attributes()取得是在<activity >里面配置的属性值,而里面嵌套的<></>可直接通过.xxx的形式取得
+                def attrs = it.attributes()
+                //如果含有了android:exported,则直接返回
+                String ATTRIBUTE_EXPORT = "{http://schemas.android.com/apk/res/android}exported"
+//                if (true) {
+//                    return
+//                }
+
+                attrs.each {
+                    SystemPrint.errorPrintln("activity key = " + it.key + " , value = " + it.value)
+                    if (attrs.containsKey("{http://schemas.android.com/apk/res/android}exported")) {
+                        SystemPrint.outPrintln("containsKey")
+                    }
+                    if ("{http://schemas.android.com/apk/res/android}exported".equals(it.key)) {
+                        SystemPrint.outPrintln("equals")
+                    }
+                }
+                //SystemPrint.outPrintln("intent filter = " + it.children().getAt("intent-filter"))
+                //得到配置的<activity>里面的如<intent-filter>
+                def children = it.children()
+                children.each {
+                    SystemPrint.errorPrintln("activity children name = " + it.name())
+                    if (!attrs.containsKey(ATTRIBUTE_EXPORT) && "intent-filter".equals(it.name)) {
+                        handlerAddExportForActivity()
+                    }
+                }
+            }
+
         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            e.printStackTrace()
         } catch (SAXException e) {
-            e.printStackTrace();
+            e.printStackTrace()
+        } catch (IOException e) {
+            e.printStackTrace()
         }
+    }
+
+    void handlerAddExportForActivity() {
+
+        SystemPrint.outPrintln("开始添加android:exported")
+
     }
 
     /**
