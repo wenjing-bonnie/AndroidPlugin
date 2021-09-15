@@ -1,13 +1,23 @@
 package com.wj.manifest;
 
-import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest;
+import com.android.aapt.Resources;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
+import org.xml.sax.SAXException;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import groovy.util.Node;
+import groovy.util.XmlParser;
 
 /**
  * Created by wenjing.liu on 2021/9/9 in J1.
@@ -67,7 +77,41 @@ public class AddExportForManifestTask extends DefaultTask {
             return;
         }
         SystemPrint.outPrintln("正在处理\n " + manifestFile.getAbsolutePath());
-        
+        String content = getManifestFileContent(manifestFile);
+        SystemPrint.outPrintln("内容为:\n" + content);
+        try {
+            XmlParser xmlParser = new XmlParser();
+           // Node node = xmlParser.parseText(content);
+           // String activity = (String) node.get("activity");
+           // SystemPrint.outPrintln("activity = \n" + activity);
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取Manifest里面的内容
+     *
+     * @param manifestFile
+     * @return
+     */
+    private String getManifestFileContent(File manifestFile) {
+        StringBuffer contentBuffer = new StringBuffer();
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(manifestFile));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                contentBuffer.append(line);
+            }
+            reader.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return contentBuffer.toString();
     }
 
 }
