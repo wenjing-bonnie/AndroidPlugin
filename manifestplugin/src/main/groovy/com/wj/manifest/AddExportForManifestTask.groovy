@@ -118,6 +118,7 @@ public class AddExportForManifestTask extends DefaultTask {
             SystemPrint.outPrintln("hasAttributeExported key = " + it.key + " , value = " + it.value)
             if (ATTRIBUTE_EXPORT.equals(it.key.toString())) {
                 isExported = true
+                //find return true相当于break
                 return true
             }
         }
@@ -134,6 +135,7 @@ public class AddExportForManifestTask extends DefaultTask {
             SystemPrint.errorPrintln("hasIntentFilter children name = " + it.name())
             if ("intent-filter".equals(it.name())) {
                 isIntent = true
+                //find return true相当于break
                 return true
             }
         }
