@@ -31,15 +31,17 @@ class AddExportForEveryPackageManifestTask extends DefaultTask {
     @TaskAction
     void run() {
         //处理所有包下的AndroidManifest文件添加android:exported
-        for (File file : manifestCollection) {
-            handlerVariantManifestFile(file)
+        SystemPrint.outPrintln("Running .....")
+        manifestCollection.each {
+            SystemPrint.outPrintln("AddExportForEveryPackageManifestTask Handler \n" + it.getAbsolutePath() + " , " + it.exists() + " , " + it.canRead() + " , " + it.canWrite())
+            handlerVariantManifestFile(it)
         }
     }
 
     /**
      * 处理单个变体的Manifest文件
      */
-    private void handlerVariantManifestFile(File manifestFile) {
+    void handlerVariantManifestFile(File manifestFile) {
         if (!manifestFile.exists()) {
             return
         }
