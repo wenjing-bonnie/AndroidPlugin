@@ -7,15 +7,20 @@ buildscript {
             //maven本地仓库
             url uri('plugins')
         }
+        maven {
+            //验证适配Android12 mobpush
+            url uri("https://mvn.mob.com/android")
+        }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.2.1"
-
         // NOTE: Do not place your application dependencies here; they belong
         // // in the individual module build.gradle files
         classpath "com.wj.plugin:firstplugin:1.0.0"
         classpath "com.android.wj.plugins:debugplugin:1.0.0"
         classpath "com.wj.plugin:manifestplugin:1.0.0"
+        // 注册MobSDK
+        classpath 'com.mob.sdk:MobSDK:+'
     }
 }
 
