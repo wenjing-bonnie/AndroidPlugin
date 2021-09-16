@@ -40,7 +40,6 @@ class AddExportForManifestTask extends DefaultTask {
 
     @TaskAction
     void run() {
-        SystemPrint.outPrintln(" AddExportForManifestTask is running !");
         //处理所有变体的AndroidManifest文件
         int size = variantNames.size();
         for (int i = 0; i < size; i++) {
@@ -76,7 +75,19 @@ class AddExportForManifestTask extends DefaultTask {
                 }
             }
             //第二步:处理<service>
+            node.application.service.each {
+                //如果已经有android:exported,则直接循环下一个:return true 相当于continue
+                if (handlerEveryNodeWithoutExported(it)) {
+                    return true
+                }
+            }
             //第三步:处理<receiver>
+            node.application.receiver.each {
+                //如果已经有android:exported,则直接循环下一个:return true 相当于continue
+                if (handlerEveryNodeWithoutExported(it)) {
+                    return true
+                }
+            }
             //第四步:保存到原AndroidManifest文件中
             String result = XmlUtil.serialize(node)
             manifestFile.write(result, "utf-8")
@@ -99,14 +110,14 @@ class AddExportForManifestTask extends DefaultTask {
         def attrs = it.attributes()
         //如果含有了android:exported,则直接处理下一个.
         if (hasAttributeExported(attrs)) {
-            SystemPrint.errorPrintln("已经含有了\" android:exported \",可以处理下一个了")
+            SystemPrint.errorPrintln(String.format("\" %s \"已经含有了\" android:exported \",可以处理下一个了", it.name()))
             //结束本次循环,相当于continue find return true相当于break
             return true
         }
         //得到配置的<activity>里面的如<intent-filter>
         def children = it.children()
         if (hasIntentFilter(children)) {
-            SystemPrint.outPrintln(String.format("因为处理的第三方SDK,所以都添加\" android:exported=true \""))
+            SystemPrint.outPrintln(String.format("因为主要处理的是第三方SDK \" %s \" ,所以都添加\" android:exported=true \"", it.name()))
             handlerAddExportForNode(it)
         }
         return false
@@ -115,7 +126,7 @@ class AddExportForManifestTask extends DefaultTask {
      * 添加android:export
      */
     private void handlerAddExportForNode(Node node) {
-        SystemPrint.outPrintln("The node is = " + node)
+        SystemPrint.outPrintln(String.format("Handler the \" %s \" node", node.name()))
         //注意这里使用的是"android:exported"而不是ATTRIBUTE_EXPORT!!!!!!
         node.attributes().put("android:exported", true)
         //TODO 该种方式就可以替换,但是之前已有的不管采用http://schemas.android.com/apk/res/android}name还是android:name都无法赋值成功

@@ -13,13 +13,13 @@ public class SystemPrint {
 
     public static void outPrintln(String info) {
         if (DEBUG) {
-            System.out.println("#@@#@@#@@#@@#@@#@@# ManifestProject #@@#@@#@@#@@#@@#@@# " + info);
+            System.out.println("#@@#@@# ManifestProject #@@#@@# " + info);
         }
     }
 
     public static void errorPrintln(String info){
         if (DEBUG) {
-            System.err.println("#@@#@@#@@#@@#@@#@@# ManifestProject #@@#@@#@@#@@#@@#@@# " + info);
+            System.err.println("#@@#@@# ManifestProject #@@#@@# " + info);
         }
     }
 }
