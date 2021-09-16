@@ -2,52 +2,37 @@ package com.wj.manifest
 
 import groovy.xml.XmlUtil
 import org.gradle.api.DefaultTask
+import org.gradle.api.file.FileCollection
 import org.gradle.api.tasks.TaskAction
 import org.xml.sax.SAXException
 
 import javax.xml.parsers.ParserConfigurationException
 
 /**
- * Created by wenjing.liu on 2021/9/9 in J1.
+ * Created by wenjing.liu on 2021/9/16 in J1.
  * <p>
  * 适配Android12,为每个带有<intent-filter>添加android:exported="true"属性
- *
+ * 在合并所有的Manifest之前为所有的AndroidManifest文件添加
  * @author wenjing.liu
  */
-class AddExportForManifestTask extends DefaultTask {
-    private String manifestFilePath;
-    private List variantNames = new ArrayList<String>();
-    protected static final String TAG = "AddExportForManifestTask";
+class AddExportForEveryPackageManifestTask extends DefaultTask {
+    private FileCollection manifestCollection;
+    protected static final String TAG = "AddExportForEveryPackageManifestTask";
     String ATTRIBUTE_EXPORT = "{http://schemas.android.com/apk/res/android}exported"
 
     /**
-     * 设置Manifest文件的路径
-     *
-     * @param path 如Users/j1/Documents/android/code/studio/AndroidPlugin/app/build/intermediates/merged_manifest/xiaomiRelease/AndroidManifest.xml
+     * 设置所有的 需要合并的Manifest文件
+     * @param collection
      */
-    void setManifestFilePath(String path) {
-        this.manifestFilePath = path;
-    }
-
-    /**
-     * 设置所有的变体名称
-     *
-     * @param names
-     */
-    void setVariantNames(List names) {
-        this.variantNames = names;
+    void setManifestsFileCollection(FileCollection collection) {
+        manifestCollection = collection
     }
 
     @TaskAction
     void run() {
-        //处理所有变体的AndroidManifest文件
-        int size = variantNames.size();
-        for (int i = 0; i < size; i++) {
-            String deleteManifest = manifestFilePath.substring(0, manifestFilePath.lastIndexOf("/"));
-            String newFilePath = String.format("%s/%s/AndroidManifest.xml",
-                    deleteManifest.substring(0, deleteManifest.lastIndexOf("/")), variantNames.get(i));
-            File manifestFile = new File(newFilePath);
-            handlerVariantManifestFile(manifestFile);
+        //处理所有包下的AndroidManifest文件添加android:exported
+        for (File file : manifestCollection) {
+            handlerVariantManifestFile(file)
         }
     }
 

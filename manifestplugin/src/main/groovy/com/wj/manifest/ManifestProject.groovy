@@ -1,6 +1,7 @@
 package com.wj.manifest
 
 import com.android.build.gradle.AppExtension
+import com.android.build.gradle.tasks.ProcessApplicationManifest
 import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -15,7 +16,8 @@ class ManifestProject implements Plugin<Project> {
     void apply(Project project) {
         SystemPrint.outPrintln("Welcome ManifestProject")
         getAllVariantManifestTask(project)
-        addExportTaskForManifest(project)
+        addExportTaskForMergedManifest(project)
+       // addExportTaskForEveryPackageManifest(project)
     }
     /**
      * 获取所有的变体相关的process%sManifest任务名称
@@ -28,12 +30,28 @@ class ManifestProject implements Plugin<Project> {
                     variantNames.add(it.name)
                 }
     }
+
+    void addExportTaskForEveryPackageManifest(Project project) {
+        AddExportForEveryPackageManifestTask beforeAddTask = project.getTasks().create(AddExportForEveryPackageManifestTask.TAG, AddExportForEveryPackageManifestTask)
+        beforeAddTask.setVariantNames(variantNames)
+        //在项目配置完成后,添加自定义Task
+        project.afterEvaluate {
+            //方案一:直接通过task的名字找到ProcessApplicationManifest这个task
+            variantNames.each {
+                //找到ProcessApplicationManifest，在这个之前添加export
+                ProcessApplicationManifest processManifestTask = project.getTasks().getByName(String.format("process%sMainManifest", it.capitalize()))
+                processManifestTask.setManifestsFileCollection(processManifestTask.getManifests())
+                processManifestTask.dependsOn(beforeAddTask)
+            }
+        }
+    }
+
     /**
      * 将添加android:exported的task添加到任务队列中
      * @param project
      */
-    void addExportTaskForManifest(Project project) {
-        AddExportForManifestTask addTask = project.getTasks().create(AddExportForManifestTask.TAG, AddExportForManifestTask)
+    void addExportTaskForMergedManifest(Project project) {
+        AddExportForMergedManifestTask addTask = project.getTasks().create(AddExportForMergedManifestTask.TAG, AddExportForMergedManifestTask)
         addTask.setVariantNames(variantNames)
         //在项目配置完成后,添加自定义Task
         project.afterEvaluate {
@@ -43,6 +61,7 @@ class ManifestProject implements Plugin<Project> {
                 ProcessMultiApkApplicationManifest processManifestTask = project.getTasks().getByName(String.format("process%sManifest", it.capitalize()))
                 addTask.setManifestFilePath(processManifestTask.getMainMergedManifest().get().getAsFile().getAbsolutePath())
                 processManifestTask.finalizedBy(addTask)
+
             }
             //方案二:从project中的所有task进行匹配
             project.getTasks().each {
