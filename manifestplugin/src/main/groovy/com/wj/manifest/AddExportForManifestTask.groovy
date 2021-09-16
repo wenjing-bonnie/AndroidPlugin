@@ -106,6 +106,7 @@ class AddExportForManifestTask extends DefaultTask {
      * @return
      */
     boolean handlerEveryNodeWithoutExported(Node it) {
+        SystemPrint.outPrintln("\n")
         //attributes()取得是在<activity >里面配置的属性值,而里面嵌套的<></>可直接通过.xxx的形式取得
         def attrs = it.attributes()
         //如果含有了android:exported,则直接处理下一个.
