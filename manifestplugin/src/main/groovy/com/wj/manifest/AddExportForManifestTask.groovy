@@ -70,7 +70,6 @@ class AddExportForManifestTask extends DefaultTask {
             //node.application直接可获取到<application>这级标签
             //第一步:处理<activity>
             node.application.activity.each {
-                SystemPrint.outPrintln("The idada is = " + it)
                 //如果已经有android:exported,则直接循环下一个:return true 相当于continue
                 if (handlerEveryNodeWithoutExported(it)) {
                     return true
@@ -117,11 +116,15 @@ class AddExportForManifestTask extends DefaultTask {
      */
     private void handlerAddExportForNode(Node node) {
         SystemPrint.outPrintln("The node is = " + node)
-        SystemPrint.outPrintln(" ==== ")
-        //putAt()只能给已有的属性进行修改value
-        node.attributes().replace("android:name","1")
         //注意这里使用的是"android:exported"而不是ATTRIBUTE_EXPORT!!!!!!
         node.attributes().put("android:exported", true)
+        //TODO 该种方式就可以替换,但是之前已有的不管采用http://schemas.android.com/apk/res/android}name还是android:name都无法赋值成功
+        //node.attributes().replace("android:exported", "aa")
+        /**这个原因跟在hasAttributeExported()使用attrs.containsKey(ATTRIBUTE_EXPORT)是一个原因,
+         * 只能在attrs.each中取出里面key在进行判断才可以返回true,然后在调用下面的方法才可以替换成功
+         * node.attributes().replace(new String("android:name"), "add")
+         * node.attributes().replace(new String("http://schemas.android.com/apk/res/android}name"), "ddd")
+         * */
     }
     /**
      * 是否含有android:exported属性
@@ -131,7 +134,6 @@ class AddExportForManifestTask extends DefaultTask {
     private boolean hasAttributeExported(Map attrs) {
         boolean isExported = false
         attrs.find {
-            //SystemPrint.outPrintln("hasAttributeExported key = " + it.key + " , value = " + it.value)
             if (ATTRIBUTE_EXPORT.equals(it.key.toString())) {
                 isExported = true
                 //find return true相当于break
@@ -148,7 +150,6 @@ class AddExportForManifestTask extends DefaultTask {
     private boolean hasIntentFilter(List children) {
         boolean isIntent = false
         children.find {
-            //SystemPrint.errorPrintln("hasIntentFilter children name = " + it.name())
             if ("intent-filter".equals(it.name())) {
                 isIntent = true
                 //find return true相当于break
