@@ -52,16 +52,18 @@ class ManifestProject implements Plugin<Project> {
 
     /**
      * 将添加android:exported的task添加到任务队列中
+     * 这个逻辑是错误的,因为报错的是processHuaweiDebugMainManifest.还未执行到ProcessDebugManifest
      * @param project
      */
+    @Deprecated
     void addExportTaskForMergedManifest(Project project) {
         AddExportForMergedManifestTask addTask = project.getTasks().create(AddExportForMergedManifestTask.TAG, AddExportForMergedManifestTask)
         addTask.setVariantNames(variantNames)
         //在项目配置完成后,添加自定义Task
         project.afterEvaluate {
-            //方案一:直接通过task的名字找到ProcessApplicationManifest这个task
+            //方案一:直接通过task的名字找到ProcessMultiApkApplicationManifest这个task
             variantNames.each {
-                //直接找到ProcessApplicationManifest，然后在执行后之后执行该Task
+                //直接找到ProcessDebugManifest,然后在执行后之后执行该Task
                 ProcessMultiApkApplicationManifest processManifestTask = project.getTasks().getByName(String.format("process%sManifest", it.capitalize()))
                 addTask.setManifestFilePath(processManifestTask.getMainMergedManifest().get().getAsFile().getAbsolutePath())
                 processManifestTask.finalizedBy(addTask)
@@ -99,16 +101,4 @@ class ManifestProject implements Plugin<Project> {
             }
         }
     }
-
-
-    void printManifest(File manifestFile) {
-        XmlParser xmlParser = new XmlParser()
-        def node = xmlParser.parse(manifestFile)
-        if (manifestFile.getAbsolutePath().endsWith("MobGuardMC-2021.0719.1753/AndroidManifest.xml")
-                || manifestFile.getAbsolutePath().endsWith("/main/AndroidManifest.xml")) {
-            SystemPrint.errorPrintln("printManifest = " + manifestFile.getAbsolutePath())
-            SystemPrint.errorPrintln(node.toString())
-        }
-    }
-
 }

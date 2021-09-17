@@ -12,9 +12,10 @@ import javax.xml.parsers.ParserConfigurationException
  * <p>
  *
  * 最后合并好的为每个AndroidManifest文带有<intent-filter>添加android:exported="true"属性
- *
+ * replace by {@link AddExportForEveryPackageManifestTask}
  * @author wenjing.liu
  */
+@Deprecated
 class AddExportForMergedManifestTask extends DefaultTask {
     private String manifestFilePath;
     private List variantNames = new ArrayList<String>();
