@@ -43,12 +43,12 @@ class ManifestProject implements Plugin<Project> {
             variantNames.each {
                 //找到processHuaweiDebugMainManifest，在这个之前添加export
                 ProcessApplicationManifest processManifestTask = project.getTasks().getByName(String.format("process%sMainManifest", it.capitalize()))
-                processManifestTask.doFirst {
-                    processManifestTask.getManifests().each {
-                        printManifest(it)
-                    }
-                    printManifest(processManifestTask.getMainManifest().get())
-                }
+//                processManifestTask.doFirst {
+//                    processManifestTask.getManifests().each {
+//                        printManifest(it)
+//                    }
+//                    printManifest(processManifestTask.getMainManifest().get())
+//                }
                 beforeAddTask.setManifestsFileCollection(processManifestTask.getManifests())
                 beforeAddTask.setMainManifestFile(processManifestTask.getMainManifest().get())
                 processManifestTask.dependsOn(beforeAddTask)
