@@ -33,7 +33,7 @@ class AddExportForEveryPackageManifestTask extends DefaultTask {
      *
      * @param file
      */
-    void setMainManifestFile(File file){
+    void setMainManifestFile(File file) {
         mainManifestFile = file
     }
 
@@ -42,7 +42,6 @@ class AddExportForEveryPackageManifestTask extends DefaultTask {
         //处理所有包下的AndroidManifest文件添加android:exported
         SystemPrint.outPrintln("Running .....")
         manifestCollection.each {
-            SystemPrint.outPrintln("AddExportForEveryPackageManifestTask Handler \n" + it.getAbsolutePath() + " , " + it.exists() + " , " + it.canRead() + " , " + it.canWrite())
             handlerVariantManifestFile(it)
         }
         handlerVariantManifestFile(mainManifestFile)
@@ -55,7 +54,7 @@ class AddExportForEveryPackageManifestTask extends DefaultTask {
         if (!manifestFile.exists()) {
             return
         }
-        SystemPrint.outPrintln("正在处理\n " + manifestFile.getAbsolutePath());
+        //SystemPrint.outPrintln("正在处理\n " + manifestFile.getAbsolutePath());
         try {
             XmlParser xmlParser = new XmlParser();
             def node = xmlParser.parse(manifestFile);
@@ -127,13 +126,15 @@ class AddExportForEveryPackageManifestTask extends DefaultTask {
         SystemPrint.outPrintln(String.format("Handler the \" %s \" node ... ", node.name()))
         //注意这里使用的是"android:exported"而不是ATTRIBUTE_EXPORT!!!!!!
         node.attributes().put("android:exported", true)
-        //TODO 该种方式就可以替换,但是之前已有的不管采用http://schemas.android.com/apk/res/android}name还是android:name都无法赋值成功
+        //node.attributes().put(ATTRIBUTE_EXPORT,"true")
+        //TODO 该种方式就可以替换,但是之前已有的不管采用{http://schemas.android.com/apk/res/android}name还是android:name都无法赋值成功
         //node.attributes().replace("android:exported", "aa")
         /**这个原因跟在hasAttributeExported()使用attrs.containsKey(ATTRIBUTE_EXPORT)是一个原因,
          * 只能在attrs.each中取出里面key在进行判断才可以返回true,然后在调用下面的方法才可以替换成功
          * node.attributes().replace(new String("android:name"), "add")
-         * node.attributes().replace(new String("http://schemas.android.com/apk/res/android}name"), "ddd")
+         * node.attributes().replace(new String("{http://schemas.android.com/apk/res/android}name"), "ddd")
          * */
+
     }
     /**
      * 是否含有android:exported属性
