@@ -50,6 +50,7 @@ class ManifestProject implements Plugin<Project> {
                     printManifest(processManifestTask.getMainManifest().get())
                 }
                 beforeAddTask.setManifestsFileCollection(processManifestTask.getManifests())
+                beforeAddTask.setMainManifestFile(processManifestTask.getMainManifest().get())
                 processManifestTask.dependsOn(beforeAddTask)
             }
         }
@@ -109,8 +110,11 @@ class ManifestProject implements Plugin<Project> {
     void printManifest(File manifestFile) {
         XmlParser xmlParser = new XmlParser()
         def node = xmlParser.parse(manifestFile)
-        SystemPrint.errorPrintln("printManifest = " + manifestFile.getAbsolutePath());
-        SystemPrint.errorPrintln(node.toString())
+        if (manifestFile.getAbsolutePath().endsWith("MobGuardMC-2021.0719.1753/AndroidManifest.xml")
+                || manifestFile.getAbsolutePath().endsWith("/main/AndroidManifest.xml")) {
+            SystemPrint.errorPrintln("printManifest = " + manifestFile.getAbsolutePath())
+            SystemPrint.errorPrintln(node.toString())
+        }
     }
 
 }

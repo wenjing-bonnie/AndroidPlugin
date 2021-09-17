@@ -16,9 +16,10 @@ import javax.xml.parsers.ParserConfigurationException
  * @author wenjing.liu
  */
 class AddExportForEveryPackageManifestTask extends DefaultTask {
-    private FileCollection manifestCollection;
     protected static final String TAG = "AddExportForEveryPackageManifestTask";
     String ATTRIBUTE_EXPORT = "{http://schemas.android.com/apk/res/android}exported"
+    private FileCollection manifestCollection
+    private File mainManifestFile
 
     /**
      * 设置所有的 需要合并的Manifest文件
@@ -26,6 +27,14 @@ class AddExportForEveryPackageManifestTask extends DefaultTask {
      */
     void setManifestsFileCollection(FileCollection collection) {
         manifestCollection = collection
+    }
+
+    /**
+     *
+     * @param file
+     */
+    void setMainManifestFile(File file){
+        mainManifestFile = file
     }
 
     @TaskAction
@@ -36,6 +45,7 @@ class AddExportForEveryPackageManifestTask extends DefaultTask {
             SystemPrint.outPrintln("AddExportForEveryPackageManifestTask Handler \n" + it.getAbsolutePath() + " , " + it.exists() + " , " + it.canRead() + " , " + it.canWrite())
             handlerVariantManifestFile(it)
         }
+        handlerVariantManifestFile(mainManifestFile)
     }
 
     /**
