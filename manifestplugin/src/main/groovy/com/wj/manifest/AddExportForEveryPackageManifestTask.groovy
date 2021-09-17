@@ -65,6 +65,8 @@ class AddExportForEveryPackageManifestTask extends DefaultTask {
             //node.application直接可获取到<application>这级标签
             //第一步:处理<activity>
             node.application.activity.each {
+               // SystemPrint.outPrintln("name = "+it.attributes().get("android:name"))
+               // SystemPrint.outPrintln("name = "+it.attributes().get("{http://schemas.android.com/apk/res/android}name"))
                 //如果已经有android:exported,则直接循环下一个:return true 相当于continue
                 if (handlerEveryNodeWithoutExported(it)) {
                     return true
