@@ -1,15 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.wj.plugin</groupId>
   <artifactId>manifestplugin</artifactId>
   <version>1.0.0</version>
   <dependencies>
     <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+      <version>1.4.10</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>MobTools</artifactId>
+          <groupId>com.mob</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>MobCommons</artifactId>
+          <groupId>com.mob</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>MobGuard</artifactId>
+          <groupId>com.mob</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>com.android.tools.build</groupId>
       <artifactId>gradle</artifactId>
-      <version>4.2.1</version>
+      <version>4.2.2</version>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>MobTools</artifactId>
+          <groupId>com.mob</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>MobCommons</artifactId>
+          <groupId>com.mob</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>MobGuard</artifactId>
+          <groupId>com.mob</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-gradle-plugin</artifactId>
+      <version>1.4.10</version>
       <scope>runtime</scope>
       <exclusions>
         <exclusion>

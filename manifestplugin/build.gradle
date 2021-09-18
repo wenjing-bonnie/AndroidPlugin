@@ -1,10 +1,14 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
+//如果使用kotlin
+apply plugin: 'org.jetbrains.kotlin.jvm'
 
 dependencies {
     implementation gradleApi()
     implementation localGroovy()
-    implementation 'com.android.tools.build:gradle:4.2.1'
+    implementation "com.android.tools.build:gradle:4.2.2"
+    //如果使用kotlin
+    implementation "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10"
 }
 
 repositories {

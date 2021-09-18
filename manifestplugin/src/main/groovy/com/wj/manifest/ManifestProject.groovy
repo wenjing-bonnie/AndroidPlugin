@@ -17,6 +17,7 @@ class ManifestProject implements Plugin<Project> {
     @Override
     void apply(Project project) {
         SystemPrint.outPrintln("Welcome ManifestProject")
+        createManifestExtension(project)
         getAllVariantManifestTask(project)
         addTaskForEveryVariantAfterEvaluate(project)
     }
@@ -28,6 +29,20 @@ class ManifestProject implements Plugin<Project> {
         project.extensions.findByType(AppExtension.class).variantFilter {
             variantNames.add(it.name)
         }
+        project.afterEvaluate {
+            ManifestExtension extension = project.getExtensions().findByName(ManifestExtension.TAG)
+            if (extension.versionFile != null) {
+                SystemPrint.outPrintln("versionPath" + extension.versionFile.getAbsolutePath())
+            }
+        }
+    }
+
+    /**
+     * 配置扩展属性
+     * @param project
+     */
+    void createManifestExtension(Project project) {
+        project.getExtensions().create(ManifestExtension.TAG, ManifestExtension)
     }
 
     /**
