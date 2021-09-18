@@ -114,7 +114,7 @@ class AddExportForMergedManifestTask extends DefaultTask {
         def attrs = it.attributes()
         //如果含有了android:exported,则直接处理下一个.
         if (hasAttributeExported(attrs)) {
-            SystemPrint.errorPrintln(String.format("The \" %s \" already has \" android:exported \" , to next one .", it.name()))
+            SystemPrintByKotlin.errorPrintln(String.format("The \" %s \" already has \" android:exported \" , to next one .", it.name()))
             //结束本次循环,相当于continue find return true相当于break
             return true
         }

@@ -29,12 +29,6 @@ class ManifestProject implements Plugin<Project> {
         project.extensions.findByType(AppExtension.class).variantFilter {
             variantNames.add(it.name)
         }
-        project.afterEvaluate {
-            ManifestExtension extension = project.getExtensions().findByName(ManifestExtension.TAG)
-            if (extension.versionFile != null) {
-                SystemPrint.outPrintln("versionPath" + extension.versionFile.getAbsolutePath())
-            }
-        }
     }
 
     /**
@@ -42,7 +36,13 @@ class ManifestProject implements Plugin<Project> {
      * @param project
      */
     void createManifestExtension(Project project) {
-        project.getExtensions().create(ManifestExtension.TAG, ManifestExtension)
+        project.getExtensions().create("ManifestExtension", ManifestExtension)
+        project.afterEvaluate {
+            ManifestExtension extension = project.getExtensions().findByType(ManifestExtension)
+            if (extension.versionFile != null) {
+                SystemPrint.outPrintln("versionPath" + extension.versionFile.getAbsolutePath())
+            }
+        }
     }
 
     /**

@@ -8,11 +8,11 @@ import java.io.File;
  * 然后再用来学习下kotlin语法
  * @author wenjing.liu
  */
-public class ManifestExtension {
-    public static final String TAG = "ManifestPlugin";
-    public File versionFile;
-   // val TAG: String = "ManifestPlugin"
-   // lateinit var versionFile: File
+class ManifestExtensionByKotlin {
+    //  public static final String TAG = "ManifestPlugin";
+    // public File versionFile;
+    val TAG: String = "ManifestPlugin"
+    lateinit var versionFile: File
     //定义方法
     // fun  [方法名] ( [参数名] : [参数类型] ) : [返回类型]{
     //    ...

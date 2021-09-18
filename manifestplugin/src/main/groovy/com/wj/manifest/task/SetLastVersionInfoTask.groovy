@@ -1,8 +1,8 @@
 package com.wj.manifest.task
 
-import com.wj.manifest.SystemPrint
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import com.wj.manifest.SystemPrint
 
 /**
  * Created by wenjing.liu on 2021/9/17 in J1.
@@ -30,7 +30,7 @@ class SetLastVersionInfoTask extends DefaultTask {
   protected void doIncrementalTaskAction(@NotNull Map<File, ? extends FileStatus> changedInputs) throws Exception {super.doIncrementalTaskAction(changedInputs)}
 
  @Override
-  Property<AnalyticsService>          getAnalyticsService() {return null}
+  Property<AnalyticsService>            getAnalyticsService() {return null}
 
  @Override
   WorkerExecutor getWorkerExecutor() {return null}
