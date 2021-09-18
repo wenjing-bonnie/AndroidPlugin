@@ -125,7 +125,7 @@ class AddExportForEveryPackageManifestTask extends DefaultTask {
      * 添加android:export
      */
     private void handlerAddExportForNode(Node node) {
-        SystemPrint.outPrintln(String.format("Handler the \" %s \" node ... ", node.name()))
+        SystemPrint.outPrintln(String.format("Handler::  \n \" %s \" ", node.attributes()))
         //注意这里使用的是"android:exported"而不是ATTRIBUTE_EXPORT!!!!!!
         node.attributes().put("android:exported", true)
         //node.attributes().put(ATTRIBUTE_EXPORT,"true")
