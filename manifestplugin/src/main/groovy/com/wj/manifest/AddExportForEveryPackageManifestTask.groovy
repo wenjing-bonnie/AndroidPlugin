@@ -38,7 +38,7 @@ class AddExportForEveryPackageManifestTask extends DefaultTask {
     }
 
     @TaskAction
-    void run() {
+    void doTaskAction() {
         //处理所有包下的AndroidManifest文件添加android:exported
         SystemPrint.outPrintln("Running .....")
         manifestCollection.each {
@@ -170,5 +170,6 @@ class AddExportForEveryPackageManifestTask extends DefaultTask {
         }
         return isIntent
     }
+
 
 }
