@@ -1,4 +1,4 @@
-package com.wj.manifest
+package com.wj.manifest.task
 
 /**
  * Created by wenjing.liu on 2021/9/17 in J1.

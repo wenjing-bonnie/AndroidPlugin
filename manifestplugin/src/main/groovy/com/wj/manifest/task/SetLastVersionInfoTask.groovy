@@ -1,5 +1,6 @@
-package com.wj.manifest
+package com.wj.manifest.task
 
+import com.wj.manifest.SystemPrint
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 

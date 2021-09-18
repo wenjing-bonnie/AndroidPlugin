@@ -3,6 +3,8 @@ package com.wj.manifest
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.tasks.ProcessApplicationManifest
 import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
+import com.wj.manifest.task.AddExportForEveryPackageManifestTask
+import com.wj.manifest.task.SetLastVersionInfoTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
