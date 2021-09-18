@@ -1,4 +1,7 @@
 package com.wj.manifest
+
+import java.io.File;
+
 /**
  * Created by wenjing.liu on 2021/9/18 in J1.
  * 扩展属性
@@ -9,11 +12,11 @@ class ManifestExtension {
     protected static final String TAG = "ManifestPlugin"
     private File versionFile
 
-    void setVersionFile(String file) {
+    protected void setVersionFile(File file) {
         this.versionFile = file
     }
 
-    String getVersionFile() {
+    protected File getVersionFile() {
         return versionFile
     }
 

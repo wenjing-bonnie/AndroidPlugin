@@ -1,13 +1,18 @@
-
 plugins {
     id 'com.android.application'
+    //Mobpush sdk
+    id 'com.mob.sdk'
     //TODO 暂时隐藏学习的时候创建的第一个插件，使用wjplugin添加一个有具体功能的插件
     //id 'com.wj.firstplugin'
     //id 'global.gradle'
     id 'com.android.wj.debug'
     id 'com.wj.plugin.manifest'
-    id 'com.mob.sdk'
+
 }
+/**'com.wj.plugin.manifest'*/
+//ManifestPlugin {
+//    versionFile = file("version.xml")
+//}
 
 android {
     compileSdkVersion 31

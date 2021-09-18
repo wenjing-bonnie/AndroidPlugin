@@ -1,5 +1,6 @@
 package com.wj.manifest.task
 
+import com.wj.manifest.ManifestExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import com.wj.manifest.SystemPrint
@@ -16,10 +17,45 @@ import com.wj.manifest.SystemPrint
  */
 class SetLastVersionInfoTask extends DefaultTask {
     protected static final String TAG = "SetLastVersionInfoTask"
+    String manifestFilePath
+    List variantNames
+
+    /**
+     * 设置Manifest文件的路径
+     *
+     * @param path 如Users/j1/Documents/android/code/studio/AndroidPlugin/app/build/intermediates/merged_manifest/xiaomiRelease/AndroidManifest.xml
+     */
+    void setManifestFilePath(String path) {
+        this.manifestFilePath = path
+    }
+    /**
+     * 设置该变体名称
+     *
+     * @param names
+     */
+    void setVariantName(List names) {
+        this.variantNames = names
+    }
 
     @TaskAction
     void doTaskAction() {
-        SystemPrint.outPrintln("Running ...")
+        SystemPrint.outPrintln("Running ..."+manifestFilePath)
+        ManifestExtension extension = project.getExtensions().findByType(ManifestExtension)
+        String versionFile = extension.versionFile
+        if (versionFile == null) {
+            SystemPrint.outPrintln("NO XML SOURCE")
+            return
+        }
+        //处理所有变体的最后的AndroidManifest文件
+        String deleteManifest = manifestFilePath.substring(0, manifestFilePath.lastIndexOf("/"));
+        String newFilePath = String.format("%s/%s/AndroidManifest.xml",
+                deleteManifest.substring(0, deleteManifest.lastIndexOf("/")), variantName)
+        File manifestFile = new File(newFilePath)
+        handlerVersionNameAndCodeForAndroidManifest(versionFile, manifestFile)
+    }
+
+    void handlerVersionNameAndCodeForAndroidManifest(String versionFile, String manifestFile) {
+        SystemPrint.outPrintln(String.format("Handler the manifestFile is\n") + manifestFile)
     }
 
 
@@ -30,7 +66,7 @@ class SetLastVersionInfoTask extends DefaultTask {
   protected void doIncrementalTaskAction(@NotNull Map<File, ? extends FileStatus> changedInputs) throws Exception {super.doIncrementalTaskAction(changedInputs)}
 
  @Override
-  Property<AnalyticsService>            getAnalyticsService() {return null}
+  Property<AnalyticsService>                      getAnalyticsService() {return null}
 
  @Override
   WorkerExecutor getWorkerExecutor() {return null}

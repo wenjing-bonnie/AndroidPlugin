@@ -8,6 +8,9 @@ import com.wj.manifest.task.SetLastVersionInfoTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 /**
  * 插件入口
  */
@@ -19,6 +22,7 @@ class ManifestProject implements Plugin<Project> {
         SystemPrint.outPrintln("Welcome ManifestProject")
         createManifestExtension(project)
         getAllVariantManifestTask(project)
+        getCurrentVariantName(project)
         addTaskForEveryVariantAfterEvaluate(project)
     }
     /**
@@ -30,19 +34,25 @@ class ManifestProject implements Plugin<Project> {
             variantNames.add(it.name)
         }
     }
+//TODO 这里还没有成功，找到当前的variant，然后在该变体基础上创建各个task。
+// 需要验证如果是多个变体打包过程是否可以 debug release
+    String getCurrentVariantName(Project project) {
+        String parameter = project.gradle.getStartParameter().getTaskRequests().toString()
+        SystemPrint.outPrintln(parameter)
+        String regex = parameter.contains("assemble") ? "assemble(\\w+)" : "generate(\\w+)"
+        Pattern pattern = Pattern.compile(regex)
+        Matcher matcher = pattern.matcher(parameter)
+        if (matcher.find()) {
+            SystemPrint.outPrintln(matcher.group(1))
+        }
+    }
 
     /**
      * 配置扩展属性
      * @param project
      */
     void createManifestExtension(Project project) {
-        project.getExtensions().create("ManifestExtension", ManifestExtension)
-        project.afterEvaluate {
-            ManifestExtension extension = project.getExtensions().findByType(ManifestExtension)
-            if (extension.versionFile != null) {
-                SystemPrint.outPrintln("versionPath" + extension.versionFile.getAbsolutePath())
-            }
-        }
+        project.getExtensions().create(ManifestExtension.TAG, ManifestExtension)
     }
 
     /**
@@ -50,11 +60,17 @@ class ManifestProject implements Plugin<Project> {
      * @param project
      */
     void addTaskForEveryVariantAfterEvaluate(Project project) {
+        //初始化 AddExportForEveryPackageManifestTask
         AddExportForEveryPackageManifestTask beforeAddTask = project.getTasks().create(AddExportForEveryPackageManifestTask.TAG,
                 AddExportForEveryPackageManifestTask)
+        //初始化 SetLastVersionInfoTask
         SetLastVersionInfoTask versionTask = project.getTasks().create(SetLastVersionInfoTask.TAG, SetLastVersionInfoTask)
+        versionTask.setVariantName(variantNames)
         //在项目配置完成后,添加自定义Task
         project.afterEvaluate {
+            //会将所有变体的task都加入到这个任务队列中。
+            //所以通过project.getTasks().each {}去匹配每个task的startsWith&&endsWith的逻辑是一致的
+            //并且这种性能会更高
             variantNames.each {
                 //直接通过task的名字找到ProcessApplicationManifest这个task
                 addExportTaskForEveryPackageManifest(project, beforeAddTask, it)
@@ -87,6 +103,7 @@ class ManifestProject implements Plugin<Project> {
         //方案一:直接通过task的名字找到ProcessMultiApkApplicationManifest这个task
         //直接找到ProcessDebugManifest,然后在执行后之后执行该Task
         ProcessMultiApkApplicationManifest processManifestTask = project.getTasks().getByName(String.format("process%sManifest", it.capitalize()))
+        versionTask.setManifestFilePath(processManifestTask.getMainMergedManifest().asFile.get().getAbsolutePath())
         processManifestTask.finalizedBy(versionTask)
     }
 
