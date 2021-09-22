@@ -1,10 +1,10 @@
 package com.wj.manifest
 
-import com.android.build.gradle.AppExtension
 import com.android.build.gradle.tasks.ProcessApplicationManifest
 import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
-import com.wj.manifest.task.AddExportForEveryPackageManifestTask
+import com.wj.manifest.task.AddExportForPackageManifestTask
 import com.wj.manifest.task.SetLastVersionInfoTask
+import com.wj.manifest.utils.SystemPrint
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -15,36 +15,15 @@ import java.util.regex.Pattern
  * 插件入口
  */
 class ManifestProject implements Plugin<Project> {
-    List variantNames = new ArrayList()
+    final String DEFAULT_VARIANT = "Debug"
+    String variantName
 
     @Override
     void apply(Project project) {
         SystemPrint.outPrintln("Welcome ManifestProject")
         createManifestExtension(project)
-        getAllVariantManifestTask(project)
-        getCurrentVariantName(project)
-        addTaskForEveryVariantAfterEvaluate(project)
-    }
-    /**
-     * 获取所有的变体相关的process%sManifest任务名称
-     * @param project
-     */
-    void getAllVariantManifestTask(Project project) {
-        project.extensions.findByType(AppExtension.class).variantFilter {
-            variantNames.add(it.name)
-        }
-    }
-//TODO 这里还没有成功，找到当前的variant，然后在该变体基础上创建各个task。
-// 需要验证如果是多个变体打包过程是否可以 debug release
-    String getCurrentVariantName(Project project) {
-        String parameter = project.gradle.getStartParameter().getTaskRequests().toString()
-        SystemPrint.outPrintln(parameter)
-        String regex = parameter.contains("assemble") ? "assemble(\\w+)" : "generate(\\w+)"
-        Pattern pattern = Pattern.compile(regex)
-        Matcher matcher = pattern.matcher(parameter)
-        if (matcher.find()) {
-            SystemPrint.outPrintln(matcher.group(1))
-        }
+        getCurrentBuildVariantName(project)
+        addTaskForVariantAfterEvaluate(project)
     }
 
     /**
@@ -59,23 +38,21 @@ class ManifestProject implements Plugin<Project> {
      * 在项目配置完成之后添加task
      * @param project
      */
-    void addTaskForEveryVariantAfterEvaluate(Project project) {
-        //初始化 AddExportForEveryPackageManifestTask
-        AddExportForEveryPackageManifestTask beforeAddTask = project.getTasks().create(AddExportForEveryPackageManifestTask.TAG,
-                AddExportForEveryPackageManifestTask)
+    void addTaskForVariantAfterEvaluate(Project project) {
+        //初始化 AddExportForPackageManifestTask
+        AddExportForPackageManifestTask addExportTask = project.getTasks().create(AddExportForPackageManifestTask.TAG,
+                AddExportForPackageManifestTask)
         //初始化 SetLastVersionInfoTask
         SetLastVersionInfoTask versionTask = project.getTasks().create(SetLastVersionInfoTask.TAG, SetLastVersionInfoTask)
-        versionTask.setVariantName(variantNames)
+        versionTask.setVariantName(variantName)
         //在项目配置完成后,添加自定义Task
         project.afterEvaluate {
-            //会将所有变体的task都加入到这个任务队列中。
+            //为当前变体的task都加入到这个任务队列中。
             //所以通过project.getTasks().each {}去匹配每个task的startsWith&&endsWith的逻辑是一致的
             //并且这种性能会更高
-            variantNames.each {
-                //直接通过task的名字找到ProcessApplicationManifest这个task
-                addExportTaskForEveryPackageManifest(project, beforeAddTask, it)
-                addVersionTaskForMergedManifest(project, versionTask, it)
-            }
+            //直接通过task的名字找到ProcessApplicationManifest这个task
+            addExportTaskForPackageManifest(project, addExportTask)
+            addVersionTaskForMergedManifest(project, versionTask)
         }
     }
 
@@ -86,9 +63,9 @@ class ManifestProject implements Plugin<Project> {
      * 不能使用ProcessDebugManifest.因为processHuaweiDebugMainManifest执行的时候就报错,还未执行到ProcessDebugManifest
      * @param project
      */
-    void addExportTaskForEveryPackageManifest(Project project, AddExportForEveryPackageManifestTask beforeAddTask, String it) {
+    void addExportTaskForPackageManifest(Project project, AddExportForPackageManifestTask beforeAddTask) {
         //找到processHuaweiDebugMainManifest，在这个之前添加export
-        ProcessApplicationManifest processManifestTask = project.getTasks().getByName(String.format("process%sMainManifest", it.capitalize()))
+        ProcessApplicationManifest processManifestTask = project.getTasks().getByName(String.format("process%sMainManifest", variantName))
         beforeAddTask.setManifestsFileCollection(processManifestTask.getManifests())
         beforeAddTask.setMainManifestFile(processManifestTask.getMainManifest().get())
         processManifestTask.dependsOn(beforeAddTask)
@@ -98,13 +75,38 @@ class ManifestProject implements Plugin<Project> {
      * 添加处理版本信息的Task
      * @param project
      */
-    void addVersionTaskForMergedManifest(Project project, SetLastVersionInfoTask versionTask, String it) {
+    void addVersionTaskForMergedManifest(Project project, SetLastVersionInfoTask versionTask) {
         //在项目配置完成后,添加自定义Task
         //方案一:直接通过task的名字找到ProcessMultiApkApplicationManifest这个task
         //直接找到ProcessDebugManifest,然后在执行后之后执行该Task
-        ProcessMultiApkApplicationManifest processManifestTask = project.getTasks().getByName(String.format("process%sManifest", it.capitalize()))
+        ProcessMultiApkApplicationManifest processManifestTask = project.getTasks().getByName(String.format("process%sManifest", variantName))
         versionTask.setManifestFilePath(processManifestTask.getMainMergedManifest().asFile.get().getAbsolutePath())
         processManifestTask.finalizedBy(versionTask)
+    }
+
+
+    /**
+     *
+     * 找到当前的variant，然后在该变体基础上创建各个task。需要验证如果是多个变体打包过程是否可以 debug release
+     *
+     * @param project
+     * @return "HuaweiDebug"\"Debug"...
+     */
+    void getCurrentBuildVariantName(Project project) {
+        String parameter = project.gradle.getStartParameter().getTaskRequests().toString()
+        SystemPrint.outPrintln(parameter)
+        //assemble(\w+)(Release|Debug)仅提取Huawei
+        String regex = parameter.contains("assemble") ? "assemble(\\w+)" : "generate(\\w+)"
+        Pattern pattern = Pattern.compile(regex)
+        Matcher matcher = pattern.matcher(parameter)
+        if (matcher.find()) {
+            //group（0）就是指的整个串，group（1） 指的是第一个括号里的东西，group（2）指的第二个括号里的东西
+            SystemPrint.outPrintln(matcher.group(1))
+            variantName = matcher.group(1)
+        }
+        if (variantName == null || variantName.length() == 0) {
+            variantName = DEFAULT_VARIANT
+        }
     }
 
 }

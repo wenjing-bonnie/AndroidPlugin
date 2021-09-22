@@ -1,6 +1,6 @@
 package com.wj.manifest.task
 
-import com.wj.manifest.SystemPrint
+import com.wj.manifest.utils.SystemPrint
 import groovy.xml.XmlUtil
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileCollection
@@ -16,8 +16,8 @@ import javax.xml.parsers.ParserConfigurationException
  * 在合并所有的Manifest之前为所有的AndroidManifest文件添加
  * @author wenjing.liu
  */
-class AddExportForEveryPackageManifestTask extends DefaultTask {
-    protected static final String TAG = "AddExportForEveryPackageManifestTask";
+class AddExportForPackageManifestTask extends DefaultTask {
+    protected static final String TAG = "AddExportForPackageManifestTask";
     String ATTRIBUTE_EXPORT = "{http://schemas.android.com/apk/res/android}exported"
     private FileCollection manifestCollection
     private File mainManifestFile

@@ -1,4 +1,4 @@
-package com.wj.manifest;
+package com.wj.manifest.utils;
 
 /**
  * Created by wenjing.liu on 2021/6/9 in J1.

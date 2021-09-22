@@ -1,6 +1,6 @@
 package com.wj.manifest.task
 
-import com.wj.manifest.SystemPrint
+import com.wj.manifest.utils.SystemPrint
 import groovy.xml.XmlUtil
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -13,7 +13,7 @@ import javax.xml.parsers.ParserConfigurationException
  * <p>
  *
  * 最后合并好的为每个AndroidManifest文带有<intent-filter>添加android:exported="true"属性
- * replace by {@link AddExportForEveryPackageManifestTask}
+ * replace by {@link AddExportForPackageManifestTask}
  * @author wenjing.liu
  */
 @Deprecated

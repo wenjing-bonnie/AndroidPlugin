@@ -3,7 +3,7 @@ package com.wj.manifest.task
 import com.wj.manifest.ManifestExtension
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
-import com.wj.manifest.SystemPrint
+import com.wj.manifest.utils.SystemPrint
 
 /**
  * Created by wenjing.liu on 2021/9/17 in J1.
@@ -18,7 +18,7 @@ import com.wj.manifest.SystemPrint
 class SetLastVersionInfoTask extends DefaultTask {
     protected static final String TAG = "SetLastVersionInfoTask"
     String manifestFilePath
-    List variantNames
+    String variantName
 
     /**
      * 设置Manifest文件的路径
@@ -33,8 +33,8 @@ class SetLastVersionInfoTask extends DefaultTask {
      *
      * @param names
      */
-    void setVariantName(List names) {
-        this.variantNames = names
+    void setVariantName(String names) {
+        this.variantName = names
     }
 
     @TaskAction
