@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <versions>
-    <version>
+    <version latest="true">
         <versionDescription>新增购物车</versionDescription>
         <versionCode>12</versionCode>
         <versionName>2.0.0</versionName>
-        <latest>true</latest>
         <date>2021/09/16</date>
     </version>
     <version>
@@ -12,6 +11,5 @@
         <versionCode>12</versionCode>
         <versionName>1.0.0</versionName>
         <date>2021/09/15</date>
-        <latest>false</latest>
     </version>
 </versions>

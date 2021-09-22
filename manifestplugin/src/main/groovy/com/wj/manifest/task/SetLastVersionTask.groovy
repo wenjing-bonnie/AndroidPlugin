@@ -15,39 +15,100 @@ import org.gradle.api.tasks.TaskAction
  *  之后修改了代码或者资源文件，再次编译，就是增量编译。
  * @author wenjing.liu
  */
-class SetLastVersionTask extends DefaultTask{
-    protected static final String TAG = "SetLastVersionInfoTask"
-    String manifestFilePath
-
+class SetLastVersionTask extends DefaultTask {
+    protected static final String TAG = "SetLastVersionTask"
+    File manifestFile
+    String versionName
+    String versionCode
     /**
-     * 设置Manifest文件的路径
-     *
-     * @param path 如Users/j1/Documents/android/code/studio/AndroidPlugin/app/build/intermediates/merged_manifest/xiaomiRelease/AndroidManifest.xml
+     * 设置Manifest文件的路径如Users/j1/Documents/android/code/studio/AndroidPlugin/app/build/intermediates/merged_manifest/xiaomiRelease/AndroidManifest.xml
+     * @param file
      */
-    void setManifestFilePath(String path) {
-        this.manifestFilePath = path
+    void setManifestFile(File file) {
+        this.manifestFile = file
     }
-
 
     @TaskAction
     void doTaskAction() {
-        SystemPrint.outPrintln("Running ..."+manifestFilePath)
+        SystemPrint.outPrintln(String.format("Running handler the manifest is  \n %s ", manifestFile.getAbsolutePath()))
         ManifestExtension extension = project.getExtensions().findByType(ManifestExtension)
-        String versionFile = extension.versionFile
-        if (versionFile == null) {
-            SystemPrint.outPrintln("NO XML SOURCE")
+        File versionFile = extension.versionFile
+        if (versionFile == null || !versionFile.exists()) {
+            SystemPrint.errorPrintln("NO VERSION XML SOURCE")
             return
         }
-        //处理所有变体的最后的AndroidManifest文件
-        String deleteManifest = manifestFilePath.substring(0, manifestFilePath.lastIndexOf("/"));
-        String newFilePath = String.format("%s/%s/AndroidManifest.xml",
-                deleteManifest.substring(0, deleteManifest.lastIndexOf("/")), variantName)
-        File manifestFile = new File(newFilePath)
-        handlerVersionNameAndCodeForAndroidManifest(versionFile, manifestFile)
+        handlerVersionNameAndCodeForAndroidManifest(versionFile)
     }
 
-    void handlerVersionNameAndCodeForAndroidManifest(String versionFile, String manifestFile) {
-        SystemPrint.outPrintln(String.format("Handler the manifestFile is\n") + manifestFile)
+    /**
+     * 为Manifest文件添加新的版本号
+     * @param versionFile
+     */
+    void handlerVersionNameAndCodeForAndroidManifest(File versionFile) {
+        SystemPrint.outPrintln(String.format("Handler the versionFile is\n") + versionFile)
+        readVersionCodeAndVersionName(versionFile)
+        if (versionName == null || versionName.length() == 0 || versionCode == null || versionCode.length() == 0) {
+            SystemPrint.errorPrintln("The config version file must set the <versionName> and <versionCode> !")
+            return
+        }
+        writeVersionCodeAndVersionNameForManifest()
+    }
+
+    /**
+     * 从versionFile中读取versionCode和versionName
+     * @param versionFile
+     */
+    void readVersionCodeAndVersionName(File versionFile) {
+
+        XmlParser xmlParser = new XmlParser()
+        def node = xmlParser.parse(versionFile)
+
+        node.children().find {
+            if (hasNewVersionTagChildNode(it)) {
+                handleVersionChildNode(it)
+                return true
+            }
+        }
+    }
+    /**
+     * 为Manifest文件写入配置的versionCode and versionName
+     */
+    void writeVersionCodeAndVersionNameForManifest() {
+        SystemPrint.outPrintln(String.format("Set the new versionCode %s , versionName %s", versionCode, versionName))
+        XmlParser xmlParser = new XmlParser()
+        def node = xmlParser.parse(manifestFile)
+        node.attributes().each {
+            SystemPrint.outPrintln(it.key + " , " + it.value.toString())
+        }
+
+    }
+
+    /**
+     * 获取的xml中配置的versionCode和versionName
+     * @param it
+     */
+    void handleVersionChildNode(Node it) {
+        versionCode = it.versionCode.text()
+        versionName = it.versionName.text()
+    }
+
+    /**
+     * 含有latest="true"的节点
+     * @param it
+     * @return
+     */
+    boolean hasNewVersionTagChildNode(Node it) {
+        boolean isFindNewVersion = false
+        it.attributes().find {
+            if (("latest").equals(it.key.toString())) {
+                isFindNewVersion = it.value
+                //找到标记" latest="true" "为最新版本的标记
+                if (isFindNewVersion) {
+                    return true
+                }
+            }
+        }
+        return isFindNewVersion
     }
 
 
@@ -58,7 +119,7 @@ class SetLastVersionTask extends DefaultTask{
   protected void doIncrementalTaskAction(@NotNull Map<File, ? extends FileStatus> changedInputs) throws Exception {super.doIncrementalTaskAction(changedInputs)}
 
  @Override
-  Property<AnalyticsService>                      getAnalyticsService() {return null}
+  Property<AnalyticsService>                                                                          getAnalyticsService() {return null}
 
  @Override
   WorkerExecutor getWorkerExecutor() {return null}

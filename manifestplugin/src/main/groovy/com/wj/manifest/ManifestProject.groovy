@@ -17,7 +17,6 @@ import java.util.regex.Pattern
  */
 class ManifestProject implements Plugin<Project> {
     String variantName
-    protected List variantInsteadNames = new ArrayList<>()
 
     @Override
     void apply(Project project) {
@@ -25,8 +24,11 @@ class ManifestProject implements Plugin<Project> {
         createManifestExtension(project)
         //在sync中无法获取到variantName
         getVariantNameInBuild(project)
-
         SystemPrint.outPrintln(String.format("Welcome %s ManifestProject", variantName))
+        //如果不是一个有效的variant,则直接返回
+        if (!isValidVariantName()) {
+            return
+        }
         addTaskForVariantAfterEvaluate(project)
     }
 
@@ -83,7 +85,7 @@ class ManifestProject implements Plugin<Project> {
         //方案一:直接通过task的名字找到ProcessMultiApkApplicationManifest这个task
         //直接找到ProcessDebugManifest,然后在执行后之后执行该Task
         ProcessMultiApkApplicationManifest processManifestTask = project.getTasks().getByName(String.format("process%sManifest", variantName))
-        versionTask.setManifestFilePath(processManifestTask.getMainMergedManifest().asFile.get().getAbsolutePath())
+        versionTask.setManifestFile(processManifestTask.getMainMergedManifest().asFile.get())
         processManifestTask.finalizedBy(versionTask)
     }
 
@@ -113,9 +115,11 @@ class ManifestProject implements Plugin<Project> {
             //group（0）就是指的整个串，group（1） 指的是第一个括号里的东西，group（2）指的第二个括号里的东西
             variantName = matcher.group(1)
         }
-        if (!checkValidVariantName()){
+        //但是sync时返回的内容:[DefaultTaskExecutionRequest{args=[],projectPath='null'}].
+        //所以此时走注释中的(2),实现"则直接但是最理想的解决方案是该在sync的时候,可以不执行该插件"这种方案,则直接隐藏下面的代码
+        if (!isValidVariantName()) {
             //从AppExtension中获取所有变体,作为获取当前变体的备用方案
-            getVariantNameFromAllVariant(project)
+            getValidVariantNameFromAllVariant(project)
         }
     }
 
@@ -125,8 +129,8 @@ class ManifestProject implements Plugin<Project> {
      *
      * @param project
      */
-    void getVariantNameFromAllVariant(Project project) {
-        if (checkValidVariantName()) {
+    void getValidVariantNameFromAllVariant(Project project) {
+        if (isValidVariantName()) {
             return
         }
         //但是sync时返回的内容:[DefaultTaskExecutionRequest{args=[],projectPath='null'}],其实该过程可以不执行该插件也可以
@@ -134,13 +138,14 @@ class ManifestProject implements Plugin<Project> {
         //
         project.extensions.findByType(AppExtension.class).variantFilter {
             variantName = it.name.capitalize()
-            if (checkValidVariantName()) {
+            SystemPrint.outPrintln(String.format("Fake variant name from all variant is \" %s \"", variantName))
+            if (isValidVariantName()) {
                 return true
             }
         }
     }
 
-    boolean checkValidVariantName() {
+    boolean isValidVariantName() {
         variantName != null && variantName.length() > 0
     }
 
