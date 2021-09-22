@@ -17,7 +17,7 @@ import javax.xml.parsers.ParserConfigurationException
  * @author wenjing.liu
  */
 class AddExportForPackageManifestTask extends DefaultTask {
-    protected static final String TAG = "AddExportForPackageManifestTask";
+    protected static String TAG = "AddExportForPackageManifestTask"
     String ATTRIBUTE_EXPORT = "{http://schemas.android.com/apk/res/android}exported"
     private FileCollection manifestCollection
     private File mainManifestFile
@@ -66,8 +66,8 @@ class AddExportForPackageManifestTask extends DefaultTask {
             //node.application直接可获取到<application>这级标签
             //第一步:处理<activity>
             node.application.activity.each {
-               // SystemPrint.outPrintln("name = "+it.attributes().get("android:name"))
-               // SystemPrint.outPrintln("name = "+it.attributes().get("{http://schemas.android.com/apk/res/android}name"))
+                // SystemPrint.outPrintln("name = "+it.attributes().get("android:name"))
+                // SystemPrint.outPrintln("name = "+it.attributes().get("{http://schemas.android.com/apk/res/android}name"))
                 //如果已经有android:exported,则直接循环下一个:return true 相当于continue
                 if (handlerEveryNodeWithoutExported(it)) {
                     return true

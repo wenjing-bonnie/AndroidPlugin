@@ -3,7 +3,7 @@ package com.wj.manifest
 import com.android.build.gradle.tasks.ProcessApplicationManifest
 import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
 import com.wj.manifest.task.AddExportForPackageManifestTask
-import com.wj.manifest.task.SetLastVersionInfoTask
+import com.wj.manifest.task.SetLastVersionTask
 import com.wj.manifest.utils.SystemPrint
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -15,14 +15,13 @@ import java.util.regex.Pattern
  * 插件入口
  */
 class ManifestProject implements Plugin<Project> {
-    final String DEFAULT_VARIANT = "Debug"
     String variantName
 
     @Override
     void apply(Project project) {
-        SystemPrint.outPrintln("Welcome ManifestProject")
-        createManifestExtension(project)
         getCurrentBuildVariantName(project)
+        SystemPrint.outPrintln(String.format("Welcome %s ManifestProject", variantName))
+        createManifestExtension(project)
         addTaskForVariantAfterEvaluate(project)
     }
 
@@ -43,8 +42,7 @@ class ManifestProject implements Plugin<Project> {
         AddExportForPackageManifestTask addExportTask = project.getTasks().create(AddExportForPackageManifestTask.TAG,
                 AddExportForPackageManifestTask)
         //初始化 SetLastVersionInfoTask
-        SetLastVersionInfoTask versionTask = project.getTasks().create(SetLastVersionInfoTask.TAG, SetLastVersionInfoTask)
-        versionTask.setVariantName(variantName)
+        SetLastVersionTask versionTask = project.getTasks().create(SetLastVersionTask.TAG, SetLastVersionTask)
         //在项目配置完成后,添加自定义Task
         project.afterEvaluate {
             //为当前变体的task都加入到这个任务队列中。
@@ -75,7 +73,7 @@ class ManifestProject implements Plugin<Project> {
      * 添加处理版本信息的Task
      * @param project
      */
-    void addVersionTaskForMergedManifest(Project project, SetLastVersionInfoTask versionTask) {
+    void addVersionTaskForMergedManifest(Project project, SetLastVersionTask versionTask) {
         //在项目配置完成后,添加自定义Task
         //方案一:直接通过task的名字找到ProcessMultiApkApplicationManifest这个task
         //直接找到ProcessDebugManifest,然后在执行后之后执行该Task
@@ -93,19 +91,18 @@ class ManifestProject implements Plugin<Project> {
      * @return "HuaweiDebug"\"Debug"...
      */
     void getCurrentBuildVariantName(Project project) {
+        String defaultVariant = "Debug"
         String parameter = project.gradle.getStartParameter().getTaskRequests().toString()
-        SystemPrint.outPrintln(parameter)
         //assemble(\w+)(Release|Debug)仅提取Huawei
         String regex = parameter.contains("assemble") ? "assemble(\\w+)" : "generate(\\w+)"
         Pattern pattern = Pattern.compile(regex)
         Matcher matcher = pattern.matcher(parameter)
         if (matcher.find()) {
             //group（0）就是指的整个串，group（1） 指的是第一个括号里的东西，group（2）指的第二个括号里的东西
-            SystemPrint.outPrintln(matcher.group(1))
             variantName = matcher.group(1)
         }
         if (variantName == null || variantName.length() == 0) {
-            variantName = DEFAULT_VARIANT
+            variantName = defaultVariant
         }
     }
 
