@@ -1,18 +1,18 @@
 plugins {
     id 'com.android.application'
-    //Mobpush sdk
+    //Mobpush sdk验证 'com.wj.plugin.manifest'可以为AndroidManifest添加android:export属性
     id 'com.mob.sdk'
     //TODO 暂时隐藏学习的时候创建的第一个插件，使用wjplugin添加一个有具体功能的插件
     //id 'com.wj.firstplugin'
     //id 'global.gradle'
-    id 'com.android.wj.debug'
+   //TODO 暂时隐藏字节码插件 id 'com.android.wj.debug'
     id 'com.wj.plugin.manifest'
 
 }
 /**'com.wj.plugin.manifest'*/
-//ManifestPlugin {
-//    versionFile = file("version.xml")
-//}
+ManifestPlugin {
+    versionFile = file("version.xml")
+}
 
 android {
     compileSdkVersion 31

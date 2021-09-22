@@ -1,5 +1,6 @@
 package com.wj.manifest
 
+import com.android.build.gradle.AppExtension
 import com.android.build.gradle.tasks.ProcessApplicationManifest
 import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
 import com.wj.manifest.task.AddExportForPackageManifestTask
@@ -16,12 +17,16 @@ import java.util.regex.Pattern
  */
 class ManifestProject implements Plugin<Project> {
     String variantName
+    protected List variantInsteadNames = new ArrayList<>()
 
     @Override
     void apply(Project project) {
-        getCurrentBuildVariantName(project)
-        SystemPrint.outPrintln(String.format("Welcome %s ManifestProject", variantName))
+        //创建ManifestExtension
         createManifestExtension(project)
+        //在sync中无法获取到variantName
+        getVariantNameInBuild(project)
+
+        SystemPrint.outPrintln(String.format("Welcome %s ManifestProject", variantName))
         addTaskForVariantAfterEvaluate(project)
     }
 
@@ -84,15 +89,22 @@ class ManifestProject implements Plugin<Project> {
 
 
     /**
+     * 获取当前变体名
+     * (1)在执行build任务的时候,
+     * project.gradle.getStartParameter().getTaskRequests()返回的内容:[DefaultTaskExecutionRequest{args=[:wjplugin:assemble, :wjplugin:testClasses, :manifestplugin:assemble, :manifestplugin:testClasses, :firstplugin:assemble, :firstplugin:testClasses, :app:assembleHuaweiDebug],projectPath='null'}]
+     * 可从该字符串中截取当前的variant，然后在该变体基础上创建各个task.
+     * (2)在执行sync任务的时候,
+     * project.gradle.getStartParameter().getTaskRequests()返回的内容:[DefaultTaskExecutionRequest{args=[],projectPath='null'}]
+     * 解决方案:通过project.extensions.findByType(AppExtension.class)找到一个可用的变体(因为会将所有的变体task都加入到任务队列中),将该变体作为变体名来执行完sync任务(仅仅为了完成sync任务,没有任何意义,在执行build任务的时候还会通过{@link #getVariantNameInBuild}替换掉逻辑)
+     * 但是最理想的解决方案是该在sync的时候,可以不执行该插件(判断逻辑就是获取的variantName为null的时候,{@link #apply()}直接返回即可)
      *
-     * 找到当前的variant，然后在该变体基础上创建各个task。需要验证如果是多个变体打包过程是否可以 debug release
-     *
+     * TODO 需要验证在debug release多个变体打包过程
      * @param project
      * @return "HuaweiDebug"\"Debug"...
      */
-    void getCurrentBuildVariantName(Project project) {
-        String defaultVariant = "Debug"
+    void getVariantNameInBuild(Project project) {
         String parameter = project.gradle.getStartParameter().getTaskRequests().toString()
+        SystemPrint.outPrintln("" + parameter)
         //assemble(\w+)(Release|Debug)仅提取Huawei
         String regex = parameter.contains("assemble") ? "assemble(\\w+)" : "generate(\\w+)"
         Pattern pattern = Pattern.compile(regex)
@@ -101,9 +113,35 @@ class ManifestProject implements Plugin<Project> {
             //group（0）就是指的整个串，group（1） 指的是第一个括号里的东西，group（2）指的第二个括号里的东西
             variantName = matcher.group(1)
         }
-        if (variantName == null || variantName.length() == 0) {
-            variantName = defaultVariant
+        if (!checkValidVariantName()){
+            //从AppExtension中获取所有变体,作为获取当前变体的备用方案
+            getVariantNameFromAllVariant(project)
         }
+    }
+
+    /**
+     * 获取所有的变体中的一个可用的变体名,仅仅用来保证sync任务可执行而已
+     * project.extensions.findByType()有执行时机,所以会出现在getVariantNameInBuild()中直接调用getVariantNameFromAllVariant()将无法更新variantName
+     *
+     * @param project
+     */
+    void getVariantNameFromAllVariant(Project project) {
+        if (checkValidVariantName()) {
+            return
+        }
+        //但是sync时返回的内容:[DefaultTaskExecutionRequest{args=[],projectPath='null'}],其实该过程可以不执行该插件也可以
+        //直接从所有的变体中取一个可用的变体名,返回
+        //
+        project.extensions.findByType(AppExtension.class).variantFilter {
+            variantName = it.name.capitalize()
+            if (checkValidVariantName()) {
+                return true
+            }
+        }
+    }
+
+    boolean checkValidVariantName() {
+        variantName != null && variantName.length() > 0
     }
 
 }
