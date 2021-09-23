@@ -15,8 +15,8 @@ import org.gradle.api.tasks.TaskAction
  *  之后修改了代码或者资源文件，再次编译，就是增量编译。
  * @author wenjing.liu
  */
-class SetLastVersionTask extends DefaultTask {
-    protected static final String TAG = "SetLastVersionTask"
+class SetLatestVersionForMergedManifestTask extends DefaultTask {
+    protected static final String TAG = "SetLatestVersionForMergedManifestFromManifestProject"
     File manifestFile
     String versionName
     String versionCode
@@ -30,11 +30,11 @@ class SetLastVersionTask extends DefaultTask {
 
     @TaskAction
     void doTaskAction() {
-        SystemPrint.outPrintln(String.format("Running handler the manifest is  \n %s ", manifestFile.getAbsolutePath()))
+        SystemPrint.outPrintln(TAG, String.format("Running handler the manifest is  \n %s ", manifestFile.getAbsolutePath()))
         ManifestExtension extension = project.getExtensions().findByType(ManifestExtension)
         File versionFile = extension.versionFile
         if (versionFile == null || !versionFile.exists()) {
-            SystemPrint.errorPrintln("NO VERSION XML SOURCE")
+            SystemPrint.errorPrintln(TAG, "NO VERSION XML SOURCE")
             return
         }
         handlerVersionNameAndCodeForAndroidManifest(versionFile)
@@ -45,10 +45,10 @@ class SetLastVersionTask extends DefaultTask {
      * @param versionFile
      */
     void handlerVersionNameAndCodeForAndroidManifest(File versionFile) {
-        SystemPrint.outPrintln(String.format("Handler the versionFile is\n") + versionFile)
+        SystemPrint.outPrintln(TAG, String.format("Handler the versionFile is\n") + versionFile)
         readVersionCodeAndVersionName(versionFile)
         if (versionName == null || versionName.length() == 0 || versionCode == null || versionCode.length() == 0) {
-            SystemPrint.errorPrintln("The config version file must set the <versionName> and <versionCode> !")
+            SystemPrint.errorPrintln(TAG, "The config version file must set the <versionName> and <versionCode> !")
             return
         }
         writeVersionCodeAndVersionNameForManifest()
@@ -77,7 +77,7 @@ class SetLastVersionTask extends DefaultTask {
      * 为Manifest文件写入配置的versionCode and versionName
      */
     void writeVersionCodeAndVersionNameForManifest() {
-        SystemPrint.outPrintln(String.format("Set the new versionCode %s , versionName %s", versionCode, versionName))
+        SystemPrint.outPrintln(TAG, String.format("Set the new versionCode %s , versionName %s", versionCode, versionName))
         XmlParser xmlParser = new XmlParser()
         def node = xmlParser.parse(manifestFile)
         int count = 0
@@ -92,6 +92,7 @@ class SetLastVersionTask extends DefaultTask {
             }
             //仅仅为了减少循环次数而已
             if (count == 2) {
+                SystemPrint.outPrintln(TAG, String.format("Write \" %s \"  is ok !", manifestFile))
                 return true
             }
         }
@@ -124,7 +125,7 @@ class SetLastVersionTask extends DefaultTask {
   protected void doIncrementalTaskAction(@NotNull Map<File, ? extends FileStatus> changedInputs) throws Exception {super.doIncrementalTaskAction(changedInputs)}
 
  @Override
-  Property<AnalyticsService>                                                                                  getAnalyticsService() {return null}
+  Property<AnalyticsService>                                                                                              getAnalyticsService() {return null}
 
  @Override
   WorkerExecutor getWorkerExecutor() {return null}

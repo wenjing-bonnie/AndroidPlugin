@@ -1,7 +1,5 @@
 package com.wj.manifest.utils;
 
-import java.awt.SystemColor;
-
 /**
  * Created by wenjing.liu on 2021/6/9 in J1.
  * <p>
@@ -12,16 +10,26 @@ import java.awt.SystemColor;
 public class SystemPrint {
 
     private static final boolean DEBUG = true;
+    private static final String TAG = "ManifestProject";
 
-    public static void outPrintln(String info) {
+    public static void outPrintln(String tag, String info) {
         if (DEBUG) {
-            System.out.println("#@@#@@# ManifestProject #@@#@@#   " + info);
+            System.out.println(String.format("#@@#@@# %s #@@#@@#  %s ", tag, info));
         }
     }
 
-    public static void errorPrintln(String info){
+    public static void errorPrintln(String tag, String info) {
         if (DEBUG) {
-            System.err.println("#@@#@@# ManifestProject #@@#@@#   " + info);
+            System.err.println(String.format("#@@#@@# %s #@@#@@#  %s ", tag, info));
+
         }
+    }
+
+    public static void outPrintln(String info) {
+        outPrintln(TAG, info);
+    }
+
+    public static void errorPrintln(String info) {
+        errorPrintln(TAG, info);
     }
 }

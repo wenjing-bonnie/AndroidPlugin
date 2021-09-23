@@ -4,7 +4,7 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.tasks.ProcessApplicationManifest
 import com.android.build.gradle.tasks.ProcessMultiApkApplicationManifest
 import com.wj.manifest.task.AddExportForPackageManifestTask
-import com.wj.manifest.task.SetLastVersionTask
+import com.wj.manifest.task.SetLatestVersionForMergedManifestTask
 import com.wj.manifest.utils.SystemPrint
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -49,7 +49,7 @@ class ManifestProject implements Plugin<Project> {
         AddExportForPackageManifestTask addExportTask = project.getTasks().create(AddExportForPackageManifestTask.TAG,
                 AddExportForPackageManifestTask)
         //初始化 SetLastVersionInfoTask
-        SetLastVersionTask versionTask = project.getTasks().create(SetLastVersionTask.TAG, SetLastVersionTask)
+        SetLatestVersionForMergedManifestTask versionTask = project.getTasks().create(SetLatestVersionForMergedManifestTask.TAG, SetLatestVersionForMergedManifestTask)
         //在项目配置完成后,添加自定义Task
         project.afterEvaluate {
             //为当前变体的task都加入到这个任务队列中。
@@ -80,7 +80,7 @@ class ManifestProject implements Plugin<Project> {
      * 添加处理版本信息的Task
      * @param project
      */
-    void addVersionTaskForMergedManifest(Project project, SetLastVersionTask versionTask) {
+    void addVersionTaskForMergedManifest(Project project, SetLatestVersionForMergedManifestTask versionTask) {
         //在项目配置完成后,添加自定义Task
         //方案一:直接通过task的名字找到ProcessMultiApkApplicationManifest这个task
         //直接找到ProcessDebugManifest,然后在执行后之后执行该Task
@@ -106,7 +106,6 @@ class ManifestProject implements Plugin<Project> {
      */
     void getVariantNameInBuild(Project project) {
         String parameter = project.gradle.getStartParameter().getTaskRequests().toString()
-        SystemPrint.outPrintln("" + parameter)
         //assemble(\w+)(Release|Debug)仅提取Huawei
         String regex = parameter.contains("assemble") ? "assemble(\\w+)" : "generate(\\w+)"
         Pattern pattern = Pattern.compile(regex)

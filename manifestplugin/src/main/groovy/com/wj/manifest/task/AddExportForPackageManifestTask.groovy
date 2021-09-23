@@ -17,7 +17,7 @@ import javax.xml.parsers.ParserConfigurationException
  * @author wenjing.liu
  */
 class AddExportForPackageManifestTask extends DefaultTask {
-    protected static String TAG = "AddExportForPackageManifestTask"
+    protected static String TAG = "AddExportForPackageManifestFromManifestProject"
     String ATTRIBUTE_EXPORT = "{http://schemas.android.com/apk/res/android}exported"
     private FileCollection manifestCollection
     private File mainManifestFile
