@@ -59,6 +59,16 @@ class AddExportForPackageManifestTask extends DefaultTask {
         if (!manifestFile.exists()) {
             return
         }
+        def node = readManifestFromPackageManifest(manifestFile)
+        writeManifestForPackageManifest(manifestFile, node)
+    }
+
+    /**
+     * 读manifest内容
+     * @param manifestFile
+     * @return
+     */
+    Node readManifestFromPackageManifest(File manifestFile) {
         try {
             XmlParser xmlParser = new XmlParser()
             def node = xmlParser.parse(manifestFile)
@@ -87,13 +97,8 @@ class AddExportForPackageManifestTask extends DefaultTask {
                     return true
                 }
             }
-            //第四步:保存到原AndroidManifest文件中
-            if (isMainManifestFile) {
-                //如果是主module的manifest,自行添加
-                return
-            }
-            String result = XmlUtil.serialize(node)
-            manifestFile.write(result, "utf-8")
+            return node
+
         } catch (ParserConfigurationException e) {
             e.printStackTrace()
         } catch (SAXException e) {
@@ -102,6 +107,21 @@ class AddExportForPackageManifestTask extends DefaultTask {
             e.printStackTrace()
         }
     }
+
+/**
+ * 第四步:保存到原AndroidManifest文件中
+ * @param manifestFile
+ * @param node
+ */
+    void writeManifestForPackageManifest(File manifestFile, Node node) {
+        if (isMainManifestFile) {
+            //如果是主module的manifest,自行添加
+            return
+        }
+        String result = XmlUtil.serialize(node)
+        manifestFile.write(result, "utf-8")
+    }
+
     /**
      * 为每个需要添加android:exported的node
      * 在each{}中该方法不能定义为private,否则会提示找到该方法
@@ -121,7 +141,6 @@ class AddExportForPackageManifestTask extends DefaultTask {
         def children = it.children()
         if (hasIntentFilter(children)) {
             handlerAddExportForNode(it)
-
         }
         return false
     }
@@ -148,6 +167,8 @@ class AddExportForPackageManifestTask extends DefaultTask {
          * node.attributes().replace(new String("{http://schemas.android.com/apk/res/android}name"), "ddd")
          * */
     }
+
+
     /**
      * 是否含有android:exported属性
      * TODO attrs.containsKey(ATTRIBUTE_EXPORT) 不起作用
