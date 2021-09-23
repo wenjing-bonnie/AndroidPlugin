@@ -14,8 +14,8 @@ public class SystemPrint {
 
     public static void outPrintln(String tag, String info) {
         if (DEBUG) {
-            System.out.println(String.format("<! %s !> :  %s ", tag, info));
 
+            System.out.println(String.format("<= %s => :  %s ", getTag(tag), info));
         }
     }
 
@@ -31,7 +31,7 @@ public class SystemPrint {
 
     public static void errorPrintln(String tag, String info) {
         if (DEBUG) {
-            System.err.println(String.format("<! %s !> :  %s ", tag, info));
+            System.err.println(String.format("<= %s => :  %s ", getTag(tag), info));
 
         }
     }
@@ -42,5 +42,12 @@ public class SystemPrint {
 
     public static void errorPrintln(String info) {
         errorPrintln(TAG, info);
+    }
+
+    private static String getTag(String tag) {
+        if (tag.length() <= 20) {
+            return tag;
+        }
+        return String.format("%s...", tag.substring(0, 19));
     }
 }

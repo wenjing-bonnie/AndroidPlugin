@@ -88,6 +88,10 @@ class AddExportForPackageManifestTask extends DefaultTask {
                 }
             }
             //第四步:保存到原AndroidManifest文件中
+            if (isMainManifestFile) {
+                //如果是主module的manifest,自行添加
+                return
+            }
             String result = XmlUtil.serialize(node)
             manifestFile.write(result, "utf-8")
         } catch (ParserConfigurationException e) {
@@ -116,7 +120,6 @@ class AddExportForPackageManifestTask extends DefaultTask {
         //得到配置的<activity>里面的如<intent-filter>
         def children = it.children()
         if (hasIntentFilter(children)) {
-            SystemPrint.outPrintln(TAG, String.format("Handler third sdk of \"%s\" , so add \"android:exported=true\" .", it.name()))
             handlerAddExportForNode(it)
 
         }
@@ -133,6 +136,7 @@ class AddExportForPackageManifestTask extends DefaultTask {
             SystemPrint.errorPrintln(TAG, String.format(errorFormat, node.attributes().toString()))
             return
         }
+        SystemPrint.outPrintln(TAG, String.format("Handler third sdk of \"%s\" , so add \"android:exported=true\" .", it.name()))
         SystemPrint.outPrintln(TAG, String.format("In Handler:  \n %s", node.attributes()))
         //注意这里使用的是"android:exported"而不是ATTRIBUTE_EXPORT!!!!!!
         node.attributes().put("android:exported", true)
