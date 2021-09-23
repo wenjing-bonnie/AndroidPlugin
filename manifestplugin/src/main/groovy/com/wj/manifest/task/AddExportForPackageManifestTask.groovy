@@ -136,7 +136,7 @@ class AddExportForPackageManifestTask extends DefaultTask {
             SystemPrint.errorPrintln(TAG, String.format(errorFormat, node.attributes().toString()))
             return
         }
-        SystemPrint.outPrintln(TAG, String.format("Handler third sdk of \"%s\" , so add \"android:exported=true\" .", it.name()))
+        SystemPrint.outPrintln(TAG, String.format("Handler third sdk of \"%s\" , so add \"android:exported=true\" .", node.name()))
         SystemPrint.outPrintln(TAG, String.format("In Handler:  \n %s", node.attributes()))
         //注意这里使用的是"android:exported"而不是ATTRIBUTE_EXPORT!!!!!!
         node.attributes().put("android:exported", true)
