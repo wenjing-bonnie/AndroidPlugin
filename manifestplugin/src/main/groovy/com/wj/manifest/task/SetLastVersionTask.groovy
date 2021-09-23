@@ -65,11 +65,14 @@ class SetLastVersionTask extends DefaultTask {
 
         node.children().find {
             if (hasNewVersionTagChildNode(it)) {
-                handleVersionChildNode(it)
+                //获取的xml中配置的versionCode和versionName
+                versionCode = it.versionCode.text()
+                versionName = it.versionName.text()
                 return true
             }
         }
     }
+
     /**
      * 为Manifest文件写入配置的versionCode and versionName
      */
@@ -77,19 +80,21 @@ class SetLastVersionTask extends DefaultTask {
         SystemPrint.outPrintln(String.format("Set the new versionCode %s , versionName %s", versionCode, versionName))
         XmlParser xmlParser = new XmlParser()
         def node = xmlParser.parse(manifestFile)
+        int count = 0
         node.attributes().each {
-            SystemPrint.outPrintln(it.key + " , " + it.value.toString())
+            if (it.key.toString().endsWith("versionCode")) {
+                node.attributes().replace(it.key, versionCode)
+                count++
+            }
+            if (it.key.toString().endsWith("versionName")) {
+                node.attributes().replace(it.key, versionName)
+                count++
+            }
+            //仅仅为了减少循环次数而已
+            if (count == 2) {
+                return true
+            }
         }
-
-    }
-
-    /**
-     * 获取的xml中配置的versionCode和versionName
-     * @param it
-     */
-    void handleVersionChildNode(Node it) {
-        versionCode = it.versionCode.text()
-        versionName = it.versionName.text()
     }
 
     /**
@@ -119,7 +124,7 @@ class SetLastVersionTask extends DefaultTask {
   protected void doIncrementalTaskAction(@NotNull Map<File, ? extends FileStatus> changedInputs) throws Exception {super.doIncrementalTaskAction(changedInputs)}
 
  @Override
-  Property<AnalyticsService>                                                                          getAnalyticsService() {return null}
+  Property<AnalyticsService>                                                                                  getAnalyticsService() {return null}
 
  @Override
   WorkerExecutor getWorkerExecutor() {return null}
