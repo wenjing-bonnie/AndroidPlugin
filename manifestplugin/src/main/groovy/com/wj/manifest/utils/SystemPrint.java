@@ -14,13 +14,24 @@ public class SystemPrint {
 
     public static void outPrintln(String tag, String info) {
         if (DEBUG) {
-            System.out.println(String.format("#@@#@@# %s #@@#@@#  %s ", tag, info));
+            System.out.println(String.format("<! %s !> :  %s ", tag, info));
+
         }
+    }
+
+    /**
+     * \33[前背景色代号;背景色代号;数字m
+     * 前背景色代号41-46
+     * 背景色代号31-36
+     * 数字m 1加粗 3斜体 4 下划线
+     */
+    private static void color(String info) {
+        System.out.format("\33[32;1m%s%n", info);
     }
 
     public static void errorPrintln(String tag, String info) {
         if (DEBUG) {
-            System.err.println(String.format("#@@#@@# %s #@@#@@#  %s ", tag, info));
+            System.err.println(String.format("<! %s !> :  %s ", tag, info));
 
         }
     }

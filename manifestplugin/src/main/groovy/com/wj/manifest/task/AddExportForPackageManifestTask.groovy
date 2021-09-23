@@ -21,6 +21,7 @@ class AddExportForPackageManifestTask extends DefaultTask {
     String ATTRIBUTE_EXPORT = "{http://schemas.android.com/apk/res/android}exported"
     private FileCollection manifestCollection
     private File mainManifestFile
+    private boolean isMainManifestFile
 
     /**
      * 设置所有的 需要合并的Manifest文件
@@ -42,9 +43,12 @@ class AddExportForPackageManifestTask extends DefaultTask {
     void doTaskAction() {
         //处理所有包下的AndroidManifest文件添加android:exported
         SystemPrint.outPrintln(TAG, "Running .....")
+        isMainManifestFile = false
         manifestCollection.each {
             handlerVariantManifestFile(it)
         }
+        //自己APP中的manifest文件只提示增加,不主动添加
+        isMainManifestFile = true
         handlerVariantManifestFile(mainManifestFile)
     }
 
@@ -56,8 +60,8 @@ class AddExportForPackageManifestTask extends DefaultTask {
             return
         }
         try {
-            XmlParser xmlParser = new XmlParser();
-            def node = xmlParser.parse(manifestFile);
+            XmlParser xmlParser = new XmlParser()
+            def node = xmlParser.parse(manifestFile)
 
             //node.attributes();获取的一级内容<?xml> <manifest>里设置的内容如:key为package、encoding,value为对应的值
             //node.children();获取的二级内容 <application> <uses-sdk>
@@ -105,15 +109,16 @@ class AddExportForPackageManifestTask extends DefaultTask {
         def attrs = it.attributes()
         //如果含有了android:exported,则直接处理下一个.
         if (hasAttributeExported(attrs)) {
-            SystemPrint.errorPrintln(TAG, String.format("The \" %s \" already has \" android:exported \" , to next one .", it.name()))
+            //SystemPrint.errorPrintln(TAG, String.format("The \" %s \" already has \" android:exported \" , to next one .", it.name()))
             //结束本次循环,相当于continue find return true相当于break
             return true
         }
         //得到配置的<activity>里面的如<intent-filter>
         def children = it.children()
         if (hasIntentFilter(children)) {
-            SystemPrint.outPrintln(TAG, String.format("Because handler the third sdk of \" %s \" , so add \" android:exported=true \" .", it.name()))
+            SystemPrint.outPrintln(TAG, String.format("Handler third sdk of \"%s\" , so add \"android:exported=true\" .", it.name()))
             handlerAddExportForNode(it)
+
         }
         return false
     }
@@ -121,18 +126,23 @@ class AddExportForPackageManifestTask extends DefaultTask {
      * 添加android:export
      */
     private void handlerAddExportForNode(Node node) {
-        SystemPrint.outPrintln(TAG, String.format("Handler::  \n \" %s \" ", node.attributes()))
+        if (isMainManifestFile) {
+            //仅做提示
+            String errorFormat = "To solve the build error \n \"Apps targeting Android 12 and higher are required to specify an explicit value for `android:exported` when the corresponding component has an intent filter defined\"\n" +
+                    "you must set \"android:exported\" based on actual demand for manifest in main module of \n \" %s \""
+            SystemPrint.errorPrintln(TAG, String.format(errorFormat, node.attributes().toString()))
+            return
+        }
+        SystemPrint.outPrintln(TAG, String.format("In Handler:  \n %s", node.attributes()))
         //注意这里使用的是"android:exported"而不是ATTRIBUTE_EXPORT!!!!!!
         node.attributes().put("android:exported", true)
         //node.attributes().put(ATTRIBUTE_EXPORT,"true")
         //TODO 该种方式就可以替换,但是之前已有的不管采用{http://schemas.android.com/apk/res/android}name还是android:name都无法赋值成功
-        //node.attributes().replace("android:exported", "aa")
         /**这个原因跟在hasAttributeExported()使用attrs.containsKey(ATTRIBUTE_EXPORT)是一个原因,
          * 只能在attrs.each中取出里面key在进行判断才可以返回true,然后在调用下面的方法才可以替换成功
          * node.attributes().replace(new String("android:name"), "add")
          * node.attributes().replace(new String("{http://schemas.android.com/apk/res/android}name"), "ddd")
          * */
-
     }
     /**
      * 是否含有android:exported属性
