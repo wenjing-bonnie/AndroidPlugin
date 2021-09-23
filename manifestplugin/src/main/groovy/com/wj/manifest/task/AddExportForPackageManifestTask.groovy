@@ -41,7 +41,7 @@ class AddExportForPackageManifestTask extends DefaultTask {
     @TaskAction
     void doTaskAction() {
         //处理所有包下的AndroidManifest文件添加android:exported
-        SystemPrint.outPrintln("Running .....")
+        SystemPrint.outPrintln(TAG, "Running .....")
         manifestCollection.each {
             handlerVariantManifestFile(it)
         }
@@ -55,19 +55,15 @@ class AddExportForPackageManifestTask extends DefaultTask {
         if (!manifestFile.exists()) {
             return
         }
-        //SystemPrint.outPrintln("正在处理\n " + manifestFile.getAbsolutePath());
         try {
             XmlParser xmlParser = new XmlParser();
             def node = xmlParser.parse(manifestFile);
 
-            //SystemPrint.outPrintln("package = " + node.attributes().get("package"));
             //node.attributes();获取的一级内容<?xml> <manifest>里设置的内容如:key为package、encoding,value为对应的值
             //node.children();获取的二级内容 <application> <uses-sdk>
             //node.application直接可获取到<application>这级标签
             //第一步:处理<activity>
             node.application.activity.each {
-                // SystemPrint.outPrintln("name = "+it.attributes().get("android:name"))
-                // SystemPrint.outPrintln("name = "+it.attributes().get("{http://schemas.android.com/apk/res/android}name"))
                 //如果已经有android:exported,则直接循环下一个:return true 相当于continue
                 if (handlerEveryNodeWithoutExported(it)) {
                     return true
@@ -105,19 +101,18 @@ class AddExportForPackageManifestTask extends DefaultTask {
      * @return
      */
     boolean handlerEveryNodeWithoutExported(Node it) {
-        SystemPrint.outPrintln("\n")
         //attributes()取得是在<activity >里面配置的属性值,而里面嵌套的<></>可直接通过.xxx的形式取得
         def attrs = it.attributes()
         //如果含有了android:exported,则直接处理下一个.
         if (hasAttributeExported(attrs)) {
-            SystemPrint.errorPrintln(String.format("The \" %s \" already has \" android:exported \" , to next one .", it.name()))
+            SystemPrint.errorPrintln(TAG, String.format("The \" %s \" already has \" android:exported \" , to next one .", it.name()))
             //结束本次循环,相当于continue find return true相当于break
             return true
         }
         //得到配置的<activity>里面的如<intent-filter>
         def children = it.children()
         if (hasIntentFilter(children)) {
-            SystemPrint.outPrintln(String.format("Because handler the third sdk of \" %s \" , so add \" android:exported=true \" .", it.name()))
+            SystemPrint.outPrintln(TAG, String.format("Because handler the third sdk of \" %s \" , so add \" android:exported=true \" .", it.name()))
             handlerAddExportForNode(it)
         }
         return false
@@ -126,7 +121,7 @@ class AddExportForPackageManifestTask extends DefaultTask {
      * 添加android:export
      */
     private void handlerAddExportForNode(Node node) {
-        SystemPrint.outPrintln(String.format("Handler::  \n \" %s \" ", node.attributes()))
+        SystemPrint.outPrintln(TAG, String.format("Handler::  \n \" %s \" ", node.attributes()))
         //注意这里使用的是"android:exported"而不是ATTRIBUTE_EXPORT!!!!!!
         node.attributes().put("android:exported", true)
         //node.attributes().put(ATTRIBUTE_EXPORT,"true")
