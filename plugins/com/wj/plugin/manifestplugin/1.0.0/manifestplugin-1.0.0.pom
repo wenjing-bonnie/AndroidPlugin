@@ -10,60 +10,12 @@
       <artifactId>kotlin-stdlib</artifactId>
       <version>1.4.10</version>
       <scope>compile</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>MobTools</artifactId>
-          <groupId>com.mob</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>MobCommons</artifactId>
-          <groupId>com.mob</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>MobGuard</artifactId>
-          <groupId>com.mob</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.android.tools.build</groupId>
       <artifactId>gradle</artifactId>
       <version>4.2.2</version>
       <scope>runtime</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>MobTools</artifactId>
-          <groupId>com.mob</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>MobCommons</artifactId>
-          <groupId>com.mob</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>MobGuard</artifactId>
-          <groupId>com.mob</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-gradle-plugin</artifactId>
-      <version>1.4.10</version>
-      <scope>runtime</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>MobTools</artifactId>
-          <groupId>com.mob</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>MobCommons</artifactId>
-          <groupId>com.mob</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>MobGuard</artifactId>
-          <groupId>com.mob</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
   </dependencies>
 </project>
